@@ -1,0 +1,56 @@
+{
+  "all": {
+    "benign_patients": 722,
+    "images": 1875,
+    "malignant_patients": 342,
+    "patients": 1064
+  },
+  "cv_folds": 5,
+  "dataset_csv_sha256": "f218d0f10b0aeeb14ff4b2cfed8631b2f4a7cf608e564548b35bddd55f3aafb3",
+  "development": {
+    "benign_patients": 577,
+    "images": 1514,
+    "malignant_patients": 274,
+    "patients": 851
+  },
+  "development_validation_folds": {
+    "0": {
+      "benign_patients": 116,
+      "images": 314,
+      "malignant_patients": 55,
+      "patients": 171
+    },
+    "1": {
+      "benign_patients": 116,
+      "images": 301,
+      "malignant_patients": 54,
+      "patients": 170
+    },
+    "2": {
+      "benign_patients": 115,
+      "images": 312,
+      "malignant_patients": 55,
+      "patients": 170
+    },
+    "3": {
+      "benign_patients": 115,
+      "images": 296,
+      "malignant_patients": 55,
+      "patients": 170
+    },
+    "4": {
+      "benign_patients": 115,
+      "images": 291,
+      "malignant_patients": 55,
+      "patients": 170
+    }
+  },
+  "random_seed": 42,
+  "test": {
+    "benign_patients": 145,
+    "images": 361,
+    "malignant_patients": 68,
+    "patients": 213
+  },
+  "test_fraction_requested": 0.2
+}
