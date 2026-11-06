@@ -1,0 +1,30 @@
+project:
+  name: busbra-robustness
+  random_seed: 42
+
+dataset:
+  raw_dir: data/raw
+  processed_dir: data/processed
+  group_column: Case
+  target_column: Pathology
+
+evaluation:
+  test_size: 0.20
+  cv_folds: 5
+  primary_metric: balanced_accuracy
+
+features:
+  total: 23
+  shape: 6
+  intensity: 7
+  texture: 10
+
+models:
+  baseline: logistic_regression
+  advanced: rbf_svm
+
+experiments:
+  clean_classification: true
+  boundary_robustness: true
+  stable_feature_selection: true
+  cnn_extension: false
