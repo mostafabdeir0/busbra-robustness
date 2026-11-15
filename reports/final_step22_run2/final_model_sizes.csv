@@ -1,0 +1,7 @@
+model,member,features,support_vectors,linear_coefficients
+logreg,0,23,,23
+logreg,1,23,,23
+logreg,2,23,,23
+svm,0,23,458,
+svm,1,23,372,
+svm,2,23,473,

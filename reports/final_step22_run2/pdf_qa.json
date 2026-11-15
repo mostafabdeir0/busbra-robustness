@@ -1,0 +1,23 @@
+{
+  "pdf_sha256": "e4623332f755582bf3686c4e2de2b1d03de6484fe29efda068575bd46c7818a2",
+  "report_content_sha256": "c8b745a9b630b504c9ca644712c2b4105507bf1debed4e4d159cc655556ab054",
+  "pages": 12,
+  "render_dpi": 105,
+  "visual_review": "passed for all twelve pages; no clipping, overlap or orphaned figures",
+  "reviewed_page_sha256": {
+    "page-01.png": "23b646361b7740021720604d808b41a508b626eee3ee5c0692803ccc651ee7be",
+    "page-02.png": "5c24fd9aaf99f916d50515de4280930099fe097b04185f2b403f532aacbdb0e4",
+    "page-03.png": "37e39b02959b7ad1922ca0eb6bc08bc8b36e9ba71b9be9731fb09b593b9700fb",
+    "page-04.png": "048319602ddc59fb9208456867eabeaa24850469a8a8d58ab7c4e5359948b22e",
+    "page-05.png": "99f35a993f88e83d5db316d27f6fc2aff472168a104374ccbc7ce05c4f43f453",
+    "page-06.png": "c6adefbdeac63c6c76b3274c6d821a83c3da5aaa3fbc1adb9becd80a2de2f67a",
+    "page-07.png": "e1c297dfddb61b56c45724029454421da6c261300d090eee7c96eedcba3a8fa4",
+    "page-08.png": "4fe022bab004d31b992a1b276c06972cdd31ec74555fe1a0e4b32b451448a186",
+    "page-09.png": "76b57cfeaafb6f588614da1f70d2199a4ce1abb685922cd7266291fdf9f142ff",
+    "page-10.png": "5a5352a1621cda888526445220cc53c185641729a2f98ac6dbb839e9d84ede04",
+    "page-11.png": "5eb591b15c256bc049c27b976aeaa89cff2c93bfdbe0ab4f9f48678c85f750e7",
+    "page-12.png": "5e1fea80360f58ae306123f66582471a05ef14bef1dfbc3f22d21385edc2c650"
+  },
+  "model_fits": 0,
+  "new_predictions": 0
+}

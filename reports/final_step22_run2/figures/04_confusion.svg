@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="525.520384pt" height="249.916875pt" viewBox="0 0 525.520384 249.916875" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-11-15T04:41:15.791360</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.2, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 249.916875 
+L 525.520384 249.916875 
+L 525.520384 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 77.585156 211.715312 
+L 237.937656 211.715312 
+L 237.937656 51.362812 
+L 77.585156 51.362812 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g clip-path="url(#p00ce4cb71b)">
+    <image xlink:href="data:image/png;base64,
+iVBORw0KGgoAAAANSUhEUgAAAN4AAADfCAYAAACZO20SAAACqklEQVR4nO3VsQ3CQBAAQZvI5dAXvdASHZCSEENIQm738EheWczkp3u9tLr58fquE4d0f3/qJzDoNDoIjBMeBIQHAeFBQHgQEB4EhAcB4UFAeBAQHgSEBwHhQUB4EBAeBIQHAeFBQHgQEB4EhAcB4UFAeBAQHgSEBwHhQUB4EBAeBIQHAeFBQHgQEB4EhAcB4UFAeBAQHgSEBwHhQUB4EBAeBIQHAeFBQHgQEB4EhAcB4UFAeBAQHgSEBwHhQUB4EBAeBIQHAeFBQHgQEB4EhAcB4UFAeBAQHgSEBwHhQUB4EBAeBIQHAeFBQHgQEB4EhAcB4UFAeBAQHgSEBwHhQUB4EBAeBIQHAeFBQHgQEB4EhAcB4UFAeBAQHgSEBwHhQUB4EBAeBIQHAeFBQHgQEB4EhAcB4UFAeBAQHgSEBwHhQUB4EBAeBIQHAeFBQHgQEB4EhAcB4UFAeBAQHgSEBwHhQUB4EBAeBOblfFmLxfzuebv6xoNy8SAgPAgIDwLCg4DwICA8CAgPAsKDgPAgIDwICA8CwoOA8CAgPAgIDwLCg4DwICA8CAgPAsKDgPAgIDwICA8CwoOA8CAgPAgIDwLCg4DwICA8CAgPAsKDgPAgIDwICA8CwoOA8CAgPAgIDwLCg4DwICA8CAgPAsKDgPAgIDwICA8CwoOA8CAgPAgIDwLCg4DwICA8CAgPAsKDgPAgIDwICA8CwoOA8CAgPAgIDwLCg4DwICA8CAgPAsKDgPAgIDwICA8CwoOA8CAgPAgIDwLCg4DwICA8CAgPAsKDgPAgIDwICA8CwoOA8CAgPAgIDwLCg4DwICA8CAgPAsKDgPAgIDwICA8CwoOA8CAgPAgIDwLCg4DwICA8CAgPAsKDgPAgIDwICA8CwoOA8EB48B9cPJj2twED/gvcq1SRDAAAAABJRU5ErkJggg==" id="image27fef56b74" transform="scale(1 -1) translate(0 -160.56)" x="77.76" y="-51.196875" width="159.84" height="160.56"/>
+   </g>
+   <g id="matplotlib.axis_1">
+    <g id="xtick_1">
+     <g id="line2d_1">
+      <defs>
+       <path id="m95ea3f1e6d" d="M 0 0 
+L 0 3.5 
+" style="stroke: #000000; stroke-width: 0.8"/>
+      </defs>
+      <g>
+       <use xlink:href="#m95ea3f1e6d" x="117.673281" y="211.715312" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_1">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="117.673281" y="226.31375" transform="rotate(-0 117.673281 226.31375)">Benign</text>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_2">
+      <g>
+       <use xlink:href="#m95ea3f1e6d" x="197.849531" y="211.715312" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_2">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="197.849531" y="226.31375" transform="rotate(-0 197.849531 226.31375)">Malignant</text>
+     </g>
+    </g>
+    <g id="text_3">
+     <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="157.761406" y="240.314531" transform="rotate(-0 157.761406 240.314531)">Predicted diagnosis</text>
+    </g>
+   </g>
+   <g id="matplotlib.axis_2">
+    <g id="ytick_1">
+     <g id="line2d_3">
+      <defs>
+       <path id="m3ffb3715e5" d="M 0 0 
+L -3.5 0 
+" style="stroke: #000000; stroke-width: 0.8"/>
+      </defs>
+      <g>
+       <use xlink:href="#m3ffb3715e5" x="77.585156" y="91.450937" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_4">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: end" x="70.585156" y="95.250156" transform="rotate(-0 70.585156 95.250156)">Benign</text>
+     </g>
+    </g>
+    <g id="ytick_2">
+     <g id="line2d_4">
+      <g>
+       <use xlink:href="#m3ffb3715e5" x="77.585156" y="171.627187" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_5">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: end" x="70.585156" y="175.426406" transform="rotate(-0 70.585156 175.426406)">Malignant</text>
+     </g>
+    </g>
+    <g id="text_6">
+     <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="14.798438" y="131.539062" transform="rotate(-90 14.798438 131.539062)">Actual diagnosis</text>
+    </g>
+   </g>
+   <g id="patch_3">
+    <path d="M 77.585156 211.715312 
+L 77.585156 51.362812 
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 77.585156 211.715312 
+L 237.937656 211.715312 
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_7">
+    <text style="font-size: 20px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #ffffff" x="117.673281" y="96.64625" transform="rotate(-0 117.673281 96.64625)">133</text>
+   </g>
+   <g id="text_8">
+    <text style="font-size: 20px; font-family: 'DejaVu Sans'; text-anchor: middle" x="197.849531" y="96.64625" transform="rotate(-0 197.849531 96.64625)">12</text>
+   </g>
+   <g id="text_9">
+    <text style="font-size: 20px; font-family: 'DejaVu Sans'; text-anchor: middle" x="117.673281" y="176.8225" transform="rotate(-0 117.673281 176.8225)">21</text>
+   </g>
+   <g id="text_10">
+    <text style="font-size: 20px; font-family: 'DejaVu Sans'; text-anchor: middle" x="197.849531" y="176.8225" transform="rotate(-0 197.849531 176.8225)">47</text>
+   </g>
+   <g id="text_11">
+    <text style="font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: middle" x="157.761406" y="45.362812" transform="rotate(-0 157.761406 45.362812)">Logistic Regression</text>
+   </g>
+  </g>
+  <g id="axes_2">
+   <g id="patch_5">
+    <path d="M 357.967884 211.715312 
+L 518.320384 211.715312 
+L 518.320384 51.362812 
+L 357.967884 51.362812 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g clip-path="url(#pde1c28d38e)">
+    <image xlink:href="data:image/png;base64,
+iVBORw0KGgoAAAANSUhEUgAAAN8AAADfCAYAAAB2+QYsAAACqUlEQVR4nO3WoQ3CYBCA0RbFON2LYZgJyQqoigoUDl12+Cu+NLznL7lc8iU3v97ffeK0ntunXoFBl9FB4BjxQUR8EBEfRMQHEfFBRHwQER9ExAcR8UFEfBARH0TEBxHxQUR8EBEfRMQHEfFBRHwQER9ExAcR8UFEfBARH0TEBxHxQUR8EBEfRMQHEfFBRHwQER9ExAcR8UFEfBARH0TEBxHxQUR8EBEfRMQHEfFBRHwQER9ExAcR8UFEfBARH0TEBxHxQUR8EBEfRMQHEfFBRHwQER9ExAcR8UFEfBARH0TEBxHxQUR8EBEfRMQHEfFBRHwQER9ExAcR8UFEfBARH0TEBxHxQUR8EBEfRMQHEfFBRHwQER9ExAcR8UFEfBARH0TEBxHxQUR8EBEfRMQHEfFBRHwQER9ExAcR8UFEfBARH0TEBxHxQUR8EBEfRMQHEfFBRHwQER9ExAcR8UFEfBARH0TEB+KD/zJfl9teL8G49XF3vpPydkJEfBARH0TEBxHxQUR8EBEfRMQHEfFBRHwQER9ExAcR8UFEfBARH0TEBxHxQUR8EBEfRMQHEfFBRHwQER9ExAcR8UFEfBARH0TEBxHxQUR8EBEfRMQHEfFBRHwQER9ExAcR8UFEfBARH0TEBxHxQUR8EBEfRMQHEfFBRHwQER9ExAcR8UFEfBARH0TEBxHxQUR8EBEfRMQHEfFBRHwQER9ExAcR8UFEfBARH0TEBxHxQUR8EBEfRMQHEfFBRHwQER9ExAcR8UFEfBARH0TEBxHxQUR8EBEfRMQHEfFBRHwQER9ExAcR8UFEfBARH0TEBxHxQUR8EBEfRMQHEfFBRHwQER9ExAcR8UFEfBARH0TEBxHxQUR8EBEfRMQHEfFBRHwQER9ExAcR8UFEfBARH0yNH0IJC+D6hPnpAAAAAElFTkSuQmCC" id="image2221c2e5bf" transform="scale(1 -1) translate(0 -160.56)" x="357.84" y="-51.196875" width="160.56" height="160.56"/>
+   </g>
+   <g id="matplotlib.axis_3">
+    <g id="xtick_3">
+     <g id="line2d_5">
+      <g>
+       <use xlink:href="#m95ea3f1e6d" x="398.056009" y="211.715312" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_12">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="398.056009" y="226.31375" transform="rotate(-0 398.056009 226.31375)">Benign</text>
+     </g>
+    </g>
+    <g id="xtick_4">
+     <g id="line2d_6">
+      <g>
+       <use xlink:href="#m95ea3f1e6d" x="478.232259" y="211.715312" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_13">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="478.232259" y="226.31375" transform="rotate(-0 478.232259 226.31375)">Malignant</text>
+     </g>
+    </g>
+    <g id="text_14">
+     <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="438.144134" y="240.314531" transform="rotate(-0 438.144134 240.314531)">Predicted diagnosis</text>
+    </g>
+   </g>
+   <g id="matplotlib.axis_4">
+    <g id="ytick_3">
+     <g id="line2d_7">
+      <g>
+       <use xlink:href="#m3ffb3715e5" x="357.967884" y="91.450937" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_15">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: end" x="350.967884" y="95.250156" transform="rotate(-0 350.967884 95.250156)">Benign</text>
+     </g>
+    </g>
+    <g id="ytick_4">
+     <g id="line2d_8">
+      <g>
+       <use xlink:href="#m3ffb3715e5" x="357.967884" y="171.627187" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_16">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: end" x="350.967884" y="175.426406" transform="rotate(-0 350.967884 175.426406)">Malignant</text>
+     </g>
+    </g>
+    <g id="text_17">
+     <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle" x="295.181165" y="131.539062" transform="rotate(-90 295.181165 131.539062)">Actual diagnosis</text>
+    </g>
+   </g>
+   <g id="patch_6">
+    <path d="M 357.967884 211.715312 
+L 357.967884 51.362812 
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 357.967884 211.715312 
+L 518.320384 211.715312 
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_18">
+    <text style="font-size: 20px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #ffffff" x="398.056009" y="96.64625" transform="rotate(-0 398.056009 96.64625)">135</text>
+   </g>
+   <g id="text_19">
+    <text style="font-size: 20px; font-family: 'DejaVu Sans'; text-anchor: middle" x="478.232259" y="96.64625" transform="rotate(-0 478.232259 96.64625)">10</text>
+   </g>
+   <g id="text_20">
+    <text style="font-size: 20px; font-family: 'DejaVu Sans'; text-anchor: middle" x="398.056009" y="176.8225" transform="rotate(-0 398.056009 176.8225)">20</text>
+   </g>
+   <g id="text_21">
+    <text style="font-size: 20px; font-family: 'DejaVu Sans'; text-anchor: middle" x="478.232259" y="176.8225" transform="rotate(-0 478.232259 176.8225)">48</text>
+   </g>
+   <g id="text_22">
+    <text style="font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: middle" x="438.144134" y="45.362812" transform="rotate(-0 438.144134 45.362812)">RBF SVM</text>
+   </g>
+  </g>
+  <g id="text_23">
+   <text style="font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: middle" x="264.308871" y="16.318125" transform="rotate(-0 264.308871 16.318125)">Held-out clean confusion matrices at probability threshold 0.5</text>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p00ce4cb71b">
+   <rect x="77.585156" y="51.362812" width="160.3525" height="160.3525"/>
+  </clipPath>
+  <clipPath id="pde1c28d38e">
+   <rect x="357.967884" y="51.362812" width="160.3525" height="160.3525"/>
+  </clipPath>
+ </defs>
+</svg>

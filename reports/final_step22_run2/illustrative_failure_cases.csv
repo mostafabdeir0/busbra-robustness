@@ -1,0 +1,7 @@
+category,Case,actual,lr_probability,svm_probability,image_ids
+SVM false negative,434,1,0.0401692336022,0.0305531932474,bus_0434-l;bus_0434-r
+SVM false negative,78,1,0.0385136906601,0.0351544830239,bus_0078-s
+SVM false negative,459,1,0.172694289297,0.0834201463724,bus_0459-l;bus_0459-r
+SVM false positive,427,0,0.948416093119,0.959210759158,bus_0427-l;bus_0427-r
+SVM false positive,643,0,0.876516147379,0.956124970435,bus_0643-l;bus_0643-r
+SVM false positive,966,0,0.906518541174,0.940705893021,bus_0966-l;bus_0966-r
