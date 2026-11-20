@@ -111,7 +111,7 @@ New in this revision, all additive (no frozen file was changed):
 | Scripts for the added development-only tables and the report build | [analysis/](analysis) |
 | Logs of the independent rerun | [reproduction_logs/](reproduction_logs) |
 
-**Model integrity.** `models/frozen_calibrated_models.joblib` has SHA-256 `627ef9df92e4b12b475a12c844b53e82e9dd7fefe05a9f07c3b94ca7c77f3586`, the digest recorded for the original frozen model in `reports/final_step22_run2/report_manifest.json`. The development pipeline was rerun from the raw archive on 2026-11-20 with the pinned versions and regenerated a byte-identical file; every development number in the report was reproduced exactly. The held-out evaluation was not rerun.
+**Model integrity.** `models/frozen_calibrated_models.joblib` has SHA-256 `627ef9df92e4b12b475a12c844b53e82e9dd7fefe05a9f07c3b94ca7c77f3586`, the digest recorded for the original frozen model in `reports/final_step22_run2/report_manifest.json`. The development pipeline was rerun from the raw archive on 2026-11-20 with the pinned versions and regenerated a byte-identical file; every deterministic development result in the report was reproduced exactly (timings vary between runs). The held-out evaluation was not rerun.
 
 **Quick start for reviewers.** Install `requirements.txt`, then open the notebook. In its default `saved` mode it needs nothing else and finishes in seconds; set `RUN_MODE = "derived"` to retrain from `derived_features/` (about 3 minutes) or `"full"` to start from `data/raw/BUSBRA.zip` (about 8 minutes). The 198 unit tests (`python -m pytest -q`) use synthetic fixtures and need no data.
 

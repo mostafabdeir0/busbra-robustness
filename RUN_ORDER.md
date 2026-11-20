@@ -52,7 +52,7 @@ Check the result: the numbers printed by stages 4, 5, 12 and 13 must equal the d
 
 ```powershell
 python analysis/build_report_tables.py --root <rebuild root> --out reports/submission_v2/tables
-python analysis/threshold_analysis.py --oof reports/submission_v2/tables/calibrated_clean_oof.csv --tables reports/submission_v2/tables --figures reports/submission_v2/figures
+python analysis/threshold_analysis.py --oof reports/submission_v2/tables/calibrated_clean_oof.csv --tables reports/submission_v2/tables --figures reports/submission_v2/figures --manifest splits/image_splits.csv
 python analysis/build_report.py --dir reports/submission_v2
 ```
 

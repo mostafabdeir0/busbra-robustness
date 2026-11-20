@@ -9,8 +9,14 @@ and choosing a new one after seeing test errors would contaminate that evaluatio
 
 Outputs
   table_threshold_fixed.{csv,md}   sensitivity/specificity at fixed thresholds
-  table_threshold_policy.{csv,md}  cross-fitted "target sensitivity" policy (threshold chosen on the
-                                   other four outer folds, applied to the fifth)
+  table_threshold_policy.{csv,md}  target-sensitivity thresholds chosen on the other four outer folds and
+                                   applied to the fifth. Descriptive only: the probabilities for those four
+                                   folds came from ensembles trained partly on the fifth fold's patients, so
+                                   this is NOT an unbiased estimate of a threshold-selection policy.
+
+Optional --manifest splits/image_splits.csv validates the predictions against the locked split:
+patients must be exactly the development patients, with matching labels and outer folds.
+Thresholds are reported at 4 decimals; rounding them further can change the result.
   threshold_numbers.json           numbers quoted in the report
   08_threshold_curves.{png,svg}    sensitivity and specificity versus threshold
 """
@@ -59,11 +65,27 @@ def main():
     ap.add_argument("--oof", type=Path, required=True)
     ap.add_argument("--tables", type=Path, required=True)
     ap.add_argument("--figures", type=Path, required=True)
+    ap.add_argument("--manifest", type=Path, default=None, help="locked splits/image_splits.csv to validate against")
     a = ap.parse_args()
     oof = pd.read_csv(a.oof)
     required = {"model", "Case", "actual", "prob_malignant", "outer_fold"}
     if not required.issubset(oof.columns) or oof.duplicated(["model", "Case"]).any():
         raise SystemExit("Expected one calibrated out-of-fold prediction per patient and model")
+    if a.manifest is not None:
+        man = pd.read_csv(a.manifest)
+        dev = man[man.split.eq("development")].groupby("Case").agg(pathology=("Pathology", "first"), fold=("dev_fold", "first"))
+        test_cases = set(man.loc[man.split.eq("test"), "Case"])
+        for m, g in oof.groupby("model"):
+            if set(g.Case) != set(dev.index):
+                raise SystemExit(f"{m}: predictions do not cover exactly the development patients")
+            if set(g.Case) & test_cases:
+                raise SystemExit(f"{m}: predictions include test patients")
+            ref = dev.loc[g.Case]
+            if not (g.actual.to_numpy() == ref.pathology.eq("malignant").astype(int).to_numpy()).all():
+                raise SystemExit(f"{m}: labels differ from the locked manifest")
+            if not (g.outer_fold.to_numpy() == ref.fold.to_numpy()).all():
+                raise SystemExit(f"{m}: outer folds differ from the locked manifest")
+        print("Validated against the locked manifest: development patients only, labels and folds match")
     nums = {"patients": int(oof.Case.nunique()), "malignant": int(oof.loc[oof.model.eq("svm"), "actual"].sum())}
 
     fixed_rows, policy_rows = [], []
@@ -87,10 +109,10 @@ def main():
             r = rates(P.y.to_numpy(), P.pred.to_numpy().astype(float), 0.5)
             full_t = threshold_for_target(y, p, target)
             policy_rows.append({"Model": SHORT[m], "Target sensitivity": f"{int(target*100)}%",
-                                "Thresholds chosen per fold": f"{min(chosen):.3f}-{max(chosen):.3f}",
+                                "Thresholds chosen per fold": f"{min(chosen):.4f}-{max(chosen):.4f}",
                                 "Sensitivity (%)": f"{100*r['sensitivity']:.1f}", "Specificity (%)": f"{100*r['specificity']:.1f}",
                                 "BA (%)": f"{100*r['balanced_accuracy']:.1f}", "Missed cancers (FN)": r["fn"],
-                                "False alarms (FP)": r["fp"], "Threshold from all development": f"{full_t:.3f}"})
+                                "False alarms (FP)": r["fp"], "Threshold from all development": f"{full_t:.4f}"})
             nums[f"{m}|policy|{target}"] = {**{k: (round(100 * v, 2) if isinstance(v, float) else v) for k, v in r.items()},
                                            "fold_thresholds": [round(c, 4) for c in chosen], "full_development_threshold": round(full_t, 4)}
 

@@ -44,7 +44,7 @@ Three experiments follow the proposal: (1) a clean-mask comparison of LR and SVM
 2. A paired linear-versus-nonlinear comparison on the same handcrafted features, with uncertainty intervals, calibration, and a measured account of cost.
 3. Evidence that measured boundary sensitivity can be dominated by how the perturbation is constructed, with both constructions reported.
 4. A negative result for training-only stability feature selection under a matched comparator.
-5. A development pipeline that was rerun from the raw archive and reproduced every development number and the final model file exactly (Section 6).
+5. A development pipeline that was rerun from the raw archive and reproduced every deterministic development result and the final model file exactly (Section 6); only timings vary between runs.
 
 ## 2. Dataset
 
@@ -137,7 +137,7 @@ The first experiment established clean nested patient-level baselines on develop
 
 *Table 4.* Original clean development baselines.
 
-Fold-to-fold variation of the calibrated development predictions shows how sensitive conclusions are to the split. Across the five outer folds, the standard deviation of balanced accuracy is 2.0 points for LR and 2.9 for the SVM (ranges of 5.1 and 7.1 points), larger than the 0.6-point gap between the two classifiers' means:
+Fold-to-fold variation of the calibrated development predictions shows how sensitive conclusions are to the split. Across the five outer folds, the standard deviation of balanced accuracy is 2.0 points for LR and 2.9 for the SVM (ranges of 5.0 and 7.2 points), larger than the 0.6-point gap between the two classifiers' means:
 
 | Model | Mean BA (%) | SD across folds (pp) | Min (%) | Max (%) |
 | --- | --- | --- | --- | --- |
@@ -377,12 +377,12 @@ A threshold judged on the same patients it was chosen on overstates what it will
 
 | Model | Target sensitivity | Thresholds chosen per fold | Sensitivity (%) | Specificity (%) | BA (%) | Missed cancers (FN) | False alarms (FP) | Threshold from all development |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| LR | 85% | 0.325-0.377 | 85.0 | 88.7 | 86.9 | 41 | 65 | 0.361 |
-| LR | 90% | 0.223-0.292 | 89.8 | 82.7 | 86.2 | 28 | 100 | 0.253 |
-| LR | 95% | 0.122-0.140 | 95.3 | 66.2 | 80.7 | 13 | 195 | 0.127 |
-| SVM | 85% | 0.317-0.367 | 85.0 | 88.2 | 86.6 | 41 | 68 | 0.347 |
-| SVM | 90% | 0.223-0.302 | 90.1 | 82.7 | 86.4 | 27 | 100 | 0.237 |
-| SVM | 95% | 0.117-0.153 | 94.9 | 66.9 | 80.9 | 14 | 191 | 0.137 |
+| LR | 85% | 0.3253-0.3770 | 85.0 | 88.7 | 86.9 | 41 | 65 | 0.3612 |
+| LR | 90% | 0.2229-0.2922 | 89.8 | 82.7 | 86.2 | 28 | 100 | 0.2533 |
+| LR | 95% | 0.1215-0.1397 | 95.3 | 66.2 | 80.7 | 13 | 195 | 0.1269 |
+| SVM | 85% | 0.3166-0.3673 | 85.0 | 88.2 | 86.6 | 41 | 68 | 0.3469 |
+| SVM | 90% | 0.2234-0.3022 | 90.1 | 82.7 | 86.4 | 27 | 100 | 0.2367 |
+| SVM | 95% | 0.1174-0.1526 | 94.9 | 66.9 | 80.9 | 14 | 191 | 0.1373 |
 
 *Table 16.* Target-sensitivity thresholds chosen on the other four folds and applied to each fold (development data; descriptive, see text). "Threshold from all development" is the value that would be locked before any evaluation on new data.
 
@@ -390,7 +390,7 @@ A threshold judged on the same patients it was chosen on overstates what it will
 
 Figure 8. Development sensitivity and specificity against the probability threshold (calibrated out-of-fold predictions). The dotted line is the frozen 0.5 threshold; the solid line is the 90%-sensitivity threshold from all development data. Not applied to the test set.
 
-The analysis suggests that much of the sensitivity limitation is an operating-point choice rather than a ranking failure, and that the trade-off is steep. It is post hoc (conceived after the test results were seen) and uses development data only, so its numbers are development estimates, not test performance. A threshold such as 0.24 for the SVM would have to be locked and then evaluated on new data before any claim about it could be made.
+The analysis suggests that much of the sensitivity limitation is an operating-point choice rather than a ranking failure, and that the trade-off is steep. It is post hoc (conceived after the test results were seen) and uses development data only, so its numbers are development estimates, not test performance. A threshold such as 0.2367 for the SVM (Table 16) would have to be locked at full precision and then evaluated on new data before any claim about it could be made. Rounding matters: on the same development predictions, 0.237 or 0.24 gives 89.8% sensitivity (28 missed cancers) instead of 90.1% at 0.2367.
 
 ### 4.9 Complexity and resource analysis
 
@@ -403,13 +403,13 @@ Timings are from one development fold (1,200 images, 680 patients), with the set
 
 *Table 17.* Single-model timing and size on one development fold (no tuning).
 
-Preparing one image (preprocessing plus the 23 features) took about 3.0 ms, which is of the same order as predicting one patient with either classifier (about 2.5 ms including aggregation). For a single fit or prediction the classifier is therefore not the cost driver (a full nested search multiplies these costs, more so for the SVM's larger grid), and the SVM's cost shows up elsewhere: the compressed single-model file is about 92 KB against 1.5 KB for LR, the tuning grid has 18 rather than 10 candidates, and the final calibrated ensemble holds 1,303 support vectors against 69 linear coefficients. Fit counts for the full procedures, including nested search:
+In this benchmark, preparing one image (preprocessing plus the 23 features) took about 3.0 ms, predicting one patient took about 2.5 ms with either classifier (including aggregation), and a single fit took milliseconds. The benchmark did not time the nested search or the calibrated ensembles, so it does not show where the complete pipeline spends most of its time; it shows only that a single SVM fit or prediction is not more expensive than LR's in any way that matters. The SVM's measurable costs are elsewhere: the compressed single-model file is about 92 KB against 1.5 KB for LR, the tuning grid has 18 rather than 10 candidates, and the final calibrated ensemble holds 1,303 support vectors against 69 linear coefficients. Fit counts for the full procedures, including nested search, from the original run's records:
 
-| Stage | Inner base fits | Base refits | Sigmoid fits | Recorded seconds |
-| --- | --- | --- | --- | --- |
-| Nested feature selection | 1680 | 20 | 0 | 125.9 |
-| Nested calibration and final fit | 1512 | 36 | 36 | Not recorded |
-| Held-out evaluation | 0 | 0 | 0 | Not recorded |
+| Stage | Inner base fits | Base refits | Sigmoid fits | Baseline check fits | Recorded seconds |
+| --- | --- | --- | --- | --- | --- |
+| Nested feature selection | 1680 | 20 | 0 | 10 | 125.9 |
+| Nested calibration and final fit | 1512 | 36 | 36 | 0 | Not recorded |
+| Held-out evaluation | 0 | 0 | 0 | 0 | Not recorded |
 
 *Table 18.* Fit counts for the full procedures.
 
@@ -421,7 +421,7 @@ The completed project supports three conclusions. Perturbation construction mate
 
 Limitations. The data come from one public dataset; patient separation prevents view leakage but does not establish scanner-, institution- or population-independent generalization. The study uses provided masks and does not evaluate an end-to-end system with an automatic segmenter. Boundary edits are synthetic and deterministic, and their overlap targets are not guaranteed to be clinically plausible. Development-informed choices are not retrospective preregistration. Calibration does not establish clinical risk validity, and the 0.5 threshold was not chosen for clinical costs. Intervals are pointwise and conditional on fixed fits; they omit retraining and external-distribution variability. Our lesion-size and view-count findings are descriptive, and the threshold analysis is post hoc and development-only.
 
-Future work. (1) A pretrained CNN on mask-bounded crops, with and without mask-jitter augmentation as a mitigation for boundary uncertainty, using the same patient-grouped development folds and calibration and a fresh external evaluation. (2) Locking a sensitivity-oriented operating threshold, such as the development value of 0.24 for the SVM (Section 4.8), and evaluating it on new data. (3) Independent data, multiple annotators and an automatic segmenter, to test whether the findings extend to realistic boundary variation. (4) Stability-aware methods beyond the frozen score, for example selection that jointly considers informativeness and drift.
+Future work. (1) A pretrained CNN on mask-bounded crops, with and without mask-jitter augmentation as a mitigation for boundary uncertainty, using the same patient-grouped development folds and calibration and a fresh external evaluation. (2) Locking a sensitivity-oriented operating threshold at full precision, such as the development value of 0.2367 for the SVM (Section 4.8), and evaluating it on new data, ideally with the threshold chosen by a fully nested procedure. (3) Independent data, multiple annotators and an automatic segmenter, to test whether the findings extend to realistic boundary variation. (4) Stability-aware methods beyond the frozen score, for example selection that jointly considers informativeness and drift.
 
 ## 6. Reproducibility and code availability
 
