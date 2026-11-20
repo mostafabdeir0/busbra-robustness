@@ -10,11 +10,14 @@ held-out evaluation.
 
 ## Final report
 
-- [Final PDF report](reports/final_step22_run2/BUS_BRA_Final_Report.pdf)
-- [Editable Markdown report](reports/final_step22_run2/BUS_BRA_Final_Report.md)
-- [Standalone HTML report](reports/final_step22_run2/BUS_BRA_Final_Report.html) (download to view)
-- [Figures in PNG and SVG](reports/final_step22_run2/figures)
-- [Reporting provenance](reports/final_step22_run2/report_manifest.json)
+- [Final report (PDF)](reports/submission_v2/BUS_BRA_Report.pdf)
+
+Submitted notebook: notebooks/BUS_BRA_submission_executed.ipynb (executed in full mode).
+
+- [Markdown version](reports/submission_v2/BUS_BRA_Report.md)
+- [HTML version](reports/submission_v2/BUS_BRA_Report.html) (download to view)
+- [Figures](reports/submission_v2/figures) and [report tables](reports/submission_v2/tables)
+- Original run report (superseded): [PDF](reports/final_step22_run2/BUS_BRA_Final_Report.pdf), with its [reporting provenance](reports/final_step22_run2/report_manifest.json)
 
 ## Main findings
 
@@ -79,10 +82,9 @@ features, models or thresholds.
 
 Download BUS-BRA version 1.0 from the [official Zenodo record](https://zenodo.org/records/8231412)
 and place the original archive at `data/raw/BUSBRA.zip` for experiment reproduction.
-The publication includes final code, tests, report, figures and report tables.
-The raw dataset, Python environments, processed feature caches and full training/
-evaluation checkpoint folders remain local and are not included in this upload.
-Keep a separate complete project backup, including the frozen models and test marker.
+The repository includes the code, tests, final report, figures, report tables, the
+frozen model and the derived development feature tables. The raw dataset, Python
+environments and the full original checkpoint folders are not included.
 
 Required dataset citation:
 
@@ -92,9 +94,8 @@ Dataset for Assessing Computer-aided Diagnosis Systems.** *Medical Physics*.
 
 ## Project status
 
-All 22 planned scientific/reporting steps are complete. Remaining handoff:
-author review, course-specific formatting/submission and preservation of the
-complete reproducibility artifacts. No additional model experiment is planned.
+All 22 planned scientific/reporting steps are complete. No additional model
+experiment is planned.
 
 ## Submission supplement (2026-11-20)
 
@@ -114,5 +115,3 @@ New in this revision, all additive (no frozen file was changed):
 **Model integrity.** `models/frozen_calibrated_models.joblib` has SHA-256 `627ef9df92e4b12b475a12c844b53e82e9dd7fefe05a9f07c3b94ca7c77f3586`, the digest recorded for the original frozen model in `reports/final_step22_run2/report_manifest.json`. The development pipeline was rerun from the raw archive on 2026-11-20 with the pinned versions and regenerated a byte-identical file; every deterministic development result in the report was reproduced exactly (timings vary between runs). The held-out evaluation was not rerun.
 
 **Quick start for reviewers.** Install `requirements.txt`, then open the notebook. The submitted copy was executed in `full` mode from `data/raw/BUSBRA.zip` (about 8 minutes). Set `RUN_MODE = "saved"` to run it from this repository only (seconds), or `"derived"` to retrain from `derived_features/` (about 3 minutes). The 198 unit tests (`python -m pytest -q`) use synthetic fixtures and need no data.
-
-The "Dataset and retained artifacts" paragraph above predates this supplement: the final model and the derived feature tables are now included. The raw dataset and the full original checkpoint folders are still not included; download BUS-BRA from Zenodo for a full rerun.
