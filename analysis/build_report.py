@@ -21,6 +21,8 @@ TABLES = {
     "stability_frequency": "table_stability_selection_frequency.md",
     "failure_breakdown": "table_failure_breakdown.md",
     "complexity": "table_complexity.md",
+    "threshold_fixed": "table_threshold_fixed.md",
+    "threshold_policy": "table_threshold_policy.md",
 }
 AMERICAN = {"characterise": "characterize", "normalisation": "normalization", "quantisation": "quantization",
             "regularised": "regularized", "favourable": "favorable", "behaviour": "behavior",
@@ -68,6 +70,8 @@ def main():
         text = text.replace(token, table)
     if "{{" in text:
         raise SystemExit("Unfilled placeholder remains: " + re.findall(r"\{\{[^}]*\}\}", text)[0])
+    counter = iter(range(1, 1000))   # number table captions in order of appearance
+    text = re.sub(r"(?m)^Table: (.*)$", lambda m: f"*Table {next(counter)}.* {m.group(1)}", text)
     for british, american in AMERICAN.items():
         text = text.replace(british, american)
     (folder / "BUS_BRA_Report.md").write_text(text, encoding="utf-8")

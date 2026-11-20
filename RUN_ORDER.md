@@ -16,7 +16,7 @@ Run each command from the repository root as `.\.venv\Scripts\python.exe -m <mod
 
 | # | Command | Purpose | Time |
 |---|---|---|---|
-| 1 | `src.data` | Audit the archive (pairs, masks, labels) | seconds |
+| 1 | `src.data` | Audit the archive (pairs, masks, labels). It decodes every image-mask pair, test images included, only to check file integrity; it computes no features or predictions and can be skipped | seconds |
 | 2 | `src.splits` | Verify the locked patient-level splits in `splits/` against the archive | seconds |
 | 3 | `src.features --all-development` | 23 clean features per development image | 7 s |
 | 4 | `src.models` | Logistic Regression, nested patient CV | 4 s |
@@ -52,10 +52,11 @@ Check the result: the numbers printed by stages 4, 5, 12 and 13 must equal the d
 
 ```powershell
 python analysis/build_report_tables.py --root <rebuild root> --out reports/submission_v2/tables
+python analysis/threshold_analysis.py --oof reports/submission_v2/tables/calibrated_clean_oof.csv --tables reports/submission_v2/tables --figures reports/submission_v2/figures
 python analysis/build_report.py --dir reports/submission_v2
 ```
 
-The first command reads development outputs only and writes every table not in the original report; the second fills the report template and prints the PDF with a locally installed Edge or Chrome.
+The first command reads development outputs only and writes every table not in the original report. The second is the exploratory, development-only operating-threshold analysis (report Section 4.8, Figure 8); it reads only the calibrated out-of-fold development predictions and never the test set. The third fills the report template and prints the PDF with a locally installed Edge or Chrome.
 
 ## Original step labels
 

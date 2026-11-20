@@ -1,0 +1,178 @@
+{
+  "patients": 851,
+  "malignant": 274,
+  "logreg|fixed|0.5": {
+    "sensitivity": 72.99,
+    "specificity": 95.32,
+    "balanced_accuracy": 84.16,
+    "tp": 200,
+    "fn": 74,
+    "tn": 550,
+    "fp": 27
+  },
+  "logreg|fixed|0.4": {
+    "sensitivity": 81.02,
+    "specificity": 90.47,
+    "balanced_accuracy": 85.74,
+    "tp": 222,
+    "fn": 52,
+    "tn": 522,
+    "fp": 55
+  },
+  "logreg|fixed|0.3": {
+    "sensitivity": 87.59,
+    "specificity": 85.62,
+    "balanced_accuracy": 86.6,
+    "tp": 240,
+    "fn": 34,
+    "tn": 494,
+    "fp": 83
+  },
+  "logreg|fixed|0.2": {
+    "sensitivity": 91.24,
+    "specificity": 78.34,
+    "balanced_accuracy": 84.79,
+    "tp": 250,
+    "fn": 24,
+    "tn": 452,
+    "fp": 125
+  },
+  "logreg|policy|0.85": {
+    "sensitivity": 85.04,
+    "specificity": 88.73,
+    "balanced_accuracy": 86.89,
+    "tp": 233,
+    "fn": 41,
+    "tn": 512,
+    "fp": 65,
+    "fold_thresholds": [
+      0.3671,
+      0.377,
+      0.3253,
+      0.3351,
+      0.3363
+    ],
+    "full_development_threshold": 0.3612
+  },
+  "logreg|policy|0.9": {
+    "sensitivity": 89.78,
+    "specificity": 82.67,
+    "balanced_accuracy": 86.22,
+    "tp": 246,
+    "fn": 28,
+    "tn": 477,
+    "fp": 100,
+    "fold_thresholds": [
+      0.2519,
+      0.2922,
+      0.2229,
+      0.2254,
+      0.2533
+    ],
+    "full_development_threshold": 0.2533
+  },
+  "logreg|policy|0.95": {
+    "sensitivity": 95.26,
+    "specificity": 66.2,
+    "balanced_accuracy": 80.73,
+    "tp": 261,
+    "fn": 13,
+    "tn": 382,
+    "fp": 195,
+    "fold_thresholds": [
+      0.1232,
+      0.1397,
+      0.1215,
+      0.1215,
+      0.1397
+    ],
+    "full_development_threshold": 0.1269
+  },
+  "svm|fixed|0.5": {
+    "sensitivity": 75.18,
+    "specificity": 94.28,
+    "balanced_accuracy": 84.73,
+    "tp": 206,
+    "fn": 68,
+    "tn": 544,
+    "fp": 33
+  },
+  "svm|fixed|0.4": {
+    "sensitivity": 81.39,
+    "specificity": 91.33,
+    "balanced_accuracy": 86.36,
+    "tp": 223,
+    "fn": 51,
+    "tn": 527,
+    "fp": 50
+  },
+  "svm|fixed|0.3": {
+    "sensitivity": 88.69,
+    "specificity": 86.83,
+    "balanced_accuracy": 87.76,
+    "tp": 243,
+    "fn": 31,
+    "tn": 501,
+    "fp": 76
+  },
+  "svm|fixed|0.2": {
+    "sensitivity": 91.61,
+    "specificity": 78.86,
+    "balanced_accuracy": 85.23,
+    "tp": 251,
+    "fn": 23,
+    "tn": 455,
+    "fp": 122
+  },
+  "svm|policy|0.85": {
+    "sensitivity": 85.04,
+    "specificity": 88.21,
+    "balanced_accuracy": 86.63,
+    "tp": 233,
+    "fn": 41,
+    "tn": 509,
+    "fp": 68,
+    "fold_thresholds": [
+      0.3488,
+      0.3673,
+      0.3166,
+      0.3225,
+      0.3407
+    ],
+    "full_development_threshold": 0.3469
+  },
+  "svm|policy|0.9": {
+    "sensitivity": 90.15,
+    "specificity": 82.67,
+    "balanced_accuracy": 86.41,
+    "tp": 247,
+    "fn": 27,
+    "tn": 477,
+    "fp": 100,
+    "fold_thresholds": [
+      0.2367,
+      0.3022,
+      0.2234,
+      0.2263,
+      0.227
+    ],
+    "full_development_threshold": 0.2367
+  },
+  "svm|policy|0.95": {
+    "sensitivity": 94.89,
+    "specificity": 66.9,
+    "balanced_accuracy": 80.89,
+    "tp": 260,
+    "fn": 14,
+    "tn": 386,
+    "fp": 191,
+    "fold_thresholds": [
+      0.1174,
+      0.1526,
+      0.122,
+      0.1174,
+      0.1389
+    ],
+    "full_development_threshold": 0.1373
+  }
+}
