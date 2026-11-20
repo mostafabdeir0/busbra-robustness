@@ -33,15 +33,45 @@ def load_dev_script(root: Path):
     return module
 
 
+def lr_coefficient_table(root: Path) -> pd.DataFrame:
+    """Base LR coefficients (per SD of each feature) of the three frozen LR ensemble members.
+
+    Reads only the frozen development-trained model file. The 1-input sigmoid calibrators are skipped.
+    """
+    import joblib
+    sys.path.insert(0, str(root))
+    bundle = joblib.load(root / "models/frozen_calibrated_models.joblib")
+    members = bundle["models"]["logreg"]["members"]
+    cols = {}
+    for k, member in enumerate(members, start=1):
+        pipe = member["base_model"].pipeline
+        assert [name for name, _ in pipe.steps] == ["scaler", "classifier"], "StandardScaler must come before LR"
+        assert list(pipe.named_steps["classifier"].classes_) == [0, 1]
+        cols[f"Member {k}"] = pd.Series(pipe.named_steps["classifier"].coef_.ravel(), index=list(member["base_model"].columns))
+    t = pd.DataFrame(cols)
+    t.index.name = "Feature"
+    t["Mean"] = t.mean(axis=1)
+    members_only = [c for c in t.columns if c.startswith("Member")]
+    t["Members agreeing with the mean's sign"] = (np.sign(t[members_only]).eq(np.sign(t["Mean"]), axis=0)).sum(axis=1)
+    t = t.reindex(t["Mean"].abs().sort_values(ascending=False).index).reset_index()
+    return t.round({c: 4 for c in members_only + ["Mean"]})
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path.cwd())
     parser.add_argument("--out", type=Path, default=None)
     parser.add_argument("--repeats", type=int, default=10)
+    parser.add_argument("--lr-coefficients-only", action="store_true",
+                        help="write only table_lr_coefficients.csv (needs just the frozen model file)")
     args = parser.parse_args()
     root = args.root.resolve()
     out = (args.out or root / "reports/submission_v2/tables").resolve()
     out.mkdir(parents=True, exist_ok=True)
+    if args.lr_coefficients_only:
+        lr_coefficient_table(root).to_csv(out / "table_lr_coefficients.csv", index=False)
+        print("wrote", out / "table_lr_coefficients.csv")
+        return
     rb = root / "results/robustness"
     nums = {}
     names = {"logreg": "LR", "svm": "SVM"}
@@ -172,6 +202,9 @@ def main():
             extract_features(*preprocess_pair(im, mk))
         samples.append((perf_counter() - t0) / len(pairs) * 1000)
     nums["extract_ms_per_image"] = round(float(np.median(samples[1:])), 2)
+
+    # 8. Logistic regression coefficients of the frozen development-trained ensemble
+    lr_coefficient_table(root).to_csv(out / "table_lr_coefficients.csv", index=False)
 
     (out / "report_numbers.json").write_text(json.dumps(nums, indent=2, default=str), encoding="utf-8")
     print("tables written to", out)
