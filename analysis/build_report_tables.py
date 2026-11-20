@@ -66,6 +66,20 @@ def lr_coefficient_table(root: Path, tables: Path) -> pd.DataFrame:
     return t.round({c: 4 for c in members_only + ["Median"]})
 
 
+def write_lr_coefficient_tables(root: Path, out: Path) -> None:
+    """Full table as CSV, and the top eight by |median| as a Markdown table for the report."""
+    full = lr_coefficient_table(root, out)
+    full.to_csv(out / "table_lr_coefficients.csv", index=False)
+    top = full.head(8)
+    short = pd.DataFrame({
+        "Feature": top["Feature"],
+        "Member 1": top["Member 1"].map("{:+.2f}".format), "Member 2": top["Member 2"].map("{:+.2f}".format),
+        "Member 3": top["Member 3"].map("{:+.2f}".format), "Median": top["Median"].map("{:+.2f}".format),
+        "Signs agreeing (of 3)": top["Members agreeing with the median's sign"],
+        "Stability folds (of 5)": top["Folds selected by stability (of 5)"]})
+    (out / "table_lr_coefficients.md").write_text(md(short), encoding="utf-8")
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path.cwd())
@@ -78,7 +92,7 @@ def main():
     out = (args.out or root / "reports/submission_v2/tables").resolve()
     out.mkdir(parents=True, exist_ok=True)
     if args.lr_coefficients_only:
-        lr_coefficient_table(root, out).to_csv(out / "table_lr_coefficients.csv", index=False)
+        write_lr_coefficient_tables(root, out)
         print("wrote", out / "table_lr_coefficients.csv")
         return
     rb = root / "results/robustness"
@@ -213,7 +227,7 @@ def main():
     nums["extract_ms_per_image"] = round(float(np.median(samples[1:])), 2)
 
     # 8. Logistic regression coefficients of the frozen development-trained ensemble
-    lr_coefficient_table(root, out).to_csv(out / "table_lr_coefficients.csv", index=False)
+    write_lr_coefficient_tables(root, out)
 
     (out / "report_numbers.json").write_text(json.dumps(nums, indent=2, default=str), encoding="utf-8")
     print("tables written to", out)

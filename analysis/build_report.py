@@ -23,6 +23,7 @@ TABLES = {
     "complexity": "table_complexity.md",
     "threshold_fixed": "table_threshold_fixed.md",
     "threshold_policy": "table_threshold_policy.md",
+    "lr_coefficients": "table_lr_coefficients.md",
 }
 AMERICAN = {"characterise": "characterize", "normalisation": "normalization", "quantisation": "quantization",
             "regularised": "regularized", "favourable": "favorable", "behaviour": "behavior",
