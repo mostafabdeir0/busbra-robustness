@@ -45,7 +45,7 @@ th { background: #eaf1f7; }
 img { max-width: 78%; display: block; margin: 8px auto 2px; page-break-inside: avoid; }
 code { font-family: Consolas, monospace; font-size: 8.8pt; background: #f1f4f7; padding: 0 2px; }
 a { color: #14527a; }
-table:last-of-type { break-inside: avoid; page-break-inside: avoid; }
+table { break-inside: avoid; page-break-inside: avoid; }
 """
 
 
