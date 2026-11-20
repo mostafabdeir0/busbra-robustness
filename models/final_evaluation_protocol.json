@@ -1,0 +1,132 @@
+{
+  "comparator": "logreg",
+  "design": {
+    "arm": "all_23_matched_tuning",
+    "base_tuning_folds": 3,
+    "base_tuning_objective_and_grids": "unchanged Step 18 all-23 robust objective and grids",
+    "base_tuning_seed": "3000 + 10 * scope_code + member_index",
+    "calibration": "three-member split ensemble; each member tuned on base patients and sigmoid-fit on separate clean patients",
+    "calibration_data": "one row per clean calibration patient; no coherent images used for calibration fit",
+    "calibration_folds": 3,
+    "calibration_split_seed": "2020 + scope_code (outer=0..4, final=5)",
+    "calibrator": "training-calibration-patient StandardScaler then LogisticRegression(C=1,max_iter=2000,random_state=42); no class or image weights",
+    "comparator": "logreg",
+    "ensemble_prediction": "mean member calibrated patient probabilities, after patient aggregation within each member",
+    "features": [
+      "shape_area_fraction",
+      "shape_axis_ratio",
+      "shape_eccentricity",
+      "shape_solidity",
+      "shape_extent",
+      "shape_circularity",
+      "int_mean",
+      "int_std",
+      "int_median",
+      "int_p10",
+      "int_p90",
+      "int_skewness",
+      "int_entropy",
+      "glcm_contrast_d1",
+      "glcm_dissimilarity_d1",
+      "glcm_homogeneity_d1",
+      "glcm_asm_d1",
+      "glcm_correlation_d1",
+      "glcm_contrast_d3",
+      "glcm_dissimilarity_d3",
+      "glcm_homogeneity_d3",
+      "glcm_asm_d3",
+      "glcm_correlation_d3"
+    ],
+    "interpretation": "posthoc development analysis; calibration quality must be measured, not assumed",
+    "method_selection_after_outer_results": "forbidden; no isotonic/threshold/model switching after calibration results",
+    "model_choice_basis": "posthoc Step 19 development five-condition BA; not a significance claim",
+    "patient_score": {
+      "logreg": "logit of mean image malignancy probability, clipped to [1e-6,1-1e-6]",
+      "svm": "mean image decision margin"
+    },
+    "primary_model": "svm",
+    "step": 20,
+    "test_access": "no held-out features/images/predictions before Step 21",
+    "threshold": 0.5,
+    "threshold_status": "fixed research threshold; not clinically optimized or validated",
+    "version": "patient_sigmoid_ensemble_v1"
+  },
+  "held_out_case_sha256": "107987d62fa25a0e49a548a24e232ebf63853b1687dce6439bd0b3d9cd9dc170",
+  "held_out_conditions": [
+    "clean",
+    "erosion_mild",
+    "dilation_mild",
+    "erosion_moderate",
+    "dilation_moderate"
+  ],
+  "held_out_image_ids_sha256": "8342bdd7b4bdc3920a056b3c926057a7e7e83239d06c19eb9529b86363988a29",
+  "held_out_images": 361,
+  "held_out_patients": 213,
+  "inputs": {
+    "clean_features": {
+      "path": "<local-path-redacted>",
+      "sha256": "18b982f4a0fa37fa2e56183a000dbc358a25298e635f819ca0665757033556a9"
+    },
+    "coherent_features": {
+      "path": "<local-path-redacted>",
+      "sha256": "35c78f8a6c4545d4395861c16e12e00c54c8044a17d49c851ca3f881c46731f5"
+    },
+    "design_summary": {
+      "path": "<local-path-redacted>",
+      "sha256": "6c2aebfba900fe95093176276f90e96c935e4864cfb3c86d44787b32856289f3"
+    },
+    "geometry": {
+      "path": "<local-path-redacted>",
+      "sha256": "b9bddedce8aceabb877a3227f401793628b32fc4e1d90e3ce0580d445fa1e55b"
+    },
+    "manifest": {
+      "path": "<local-path-redacted>",
+      "sha256": "5b83114eba3a029a7ae59a0e461e84b28b5baf2444f439b1db67aeeebe141240"
+    },
+    "protocol": {
+      "path": "<local-path-redacted>",
+      "sha256": "ab489b425faf5e44f101844e1f217466808d93da73b7e59803917f52c674b339"
+    },
+    "step19_clean": {
+      "path": "<local-path-redacted>",
+      "sha256": "2f21245a57058af3f11237f131acbc24f2eb95da0819ab33958d6f5b07f69a78"
+    },
+    "step19_paired": {
+      "path": "<local-path-redacted>",
+      "sha256": "98a1cfeda7633f965e44f7798e1f5cf683c55dcdf68e50ddaf154cbd3998137b"
+    },
+    "step19_summary": {
+      "path": "<local-path-redacted>",
+      "sha256": "7281345a7ffba3bb66c32c5d83275d68f2d82b15b4a818228b4fc9b48b9563d1"
+    }
+  },
+  "limitations": "Posthoc development-based model choice; fixed threshold is research-only, not a clinical decision rule.",
+  "missing_coherent_policy": "fail checkpoint if any test image lacks a valid coherent condition; do not silently drop or replace views",
+  "model_artifact_sha256": "627ef9df92e4b12b475a12c844b53e82e9dd7fefe05a9f07c3b94ca7c77f3586",
+  "original_perturbations": "preserved development experiment; not regenerated for primary held-out evaluation",
+  "primary_endpoint": "SVM clean patient balanced accuracy at fixed probability threshold 0.5",
+  "primary_model": "svm",
+  "secondary_endpoints": [
+    "LR clean metrics and paired LR/SVM clean difference",
+    "four coherent-condition paired robustness metrics",
+    "clean and perturbed probability Brier/log loss",
+    "five-condition mean BA"
+  ],
+  "source_sha256": {
+    "coherent_features.py": "8880d485eb870c618e6fc56fe55e918f97cad67678e2d81575285bcc5f2898e2",
+    "coherent_perturbations.py": "484089c555097e2a30e91289d33d9b9d709ff6279220998767a572e5f0e8d701",
+    "features.py": "0c2b5f08f2813ac3fcc3a0efaa554240055bba47df09b2c79a316ecbde811e83",
+    "models.py": "d1218f726715aa49efc202cce060a362eb1f41fb9fa3ccc86995b12552de65c8",
+    "patient_calibration.py": "e337c52f727e65ab744d1cd78cbabf1d97262a0a9ed655bdd5129070eef9bd89",
+    "perturbations.py": "0b75ad0c7b03b9b79e9c7fa5a615518e9dabaf46c6277e036475077c8790e0d1",
+    "robustness_eval.py": "1da970143b818285cf30539a86355a904769f8cc96a15eb24674679ec4938c27",
+    "stable_evaluation.py": "ca4e7b0f5b3e64f488ca36cffc323b93b04bb08f8c75738e926af545c2699c03",
+    "stable_selection.py": "ba2fdf93b5b9899c7cd9773ca817232d3da6c9aca7b660f4b05cb56064bd86e0",
+    "svm_model.py": "764bf409944e29bbe2c0cd59be7f12664f8a6c4e1d6677627dac5c053a3ab8b0"
+  },
+  "status": "frozen_before_held_out_evaluation",
+  "step": 20,
+  "test_once_policy": "evaluate both fixed ensembles once; no retraining, model switching, threshold tuning or feature changes after seeing test results",
+  "threshold": 0.5,
+  "uncertainty_plan": "10000 paired patient bootstrap replicates within test diagnosis, seed 42; pointwise percentile 95%; fixed fitted models"
+}

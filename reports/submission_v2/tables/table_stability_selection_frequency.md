@@ -1,0 +1,25 @@
+| Feature | LR folds selected (of 5) | SVM folds selected (of 5) |
+| --- | --- | --- |
+| glcm_asm_d1 | 5 | 5 |
+| glcm_asm_d3 | 5 | 5 |
+| glcm_contrast_d1 | 5 | 5 |
+| glcm_dissimilarity_d1 | 5 | 5 |
+| glcm_dissimilarity_d3 | 5 | 5 |
+| glcm_homogeneity_d1 | 5 | 5 |
+| glcm_homogeneity_d3 | 5 | 5 |
+| int_mean | 5 | 5 |
+| int_median | 5 | 5 |
+| int_p10 | 5 | 5 |
+| shape_area_fraction | 5 | 5 |
+| shape_circularity | 5 | 5 |
+| shape_eccentricity | 5 | 5 |
+| shape_solidity | 5 | 5 |
+| shape_extent | 4 | 4 |
+| shape_axis_ratio | 1 | 1 |
+| glcm_contrast_d3 | 0 | 0 |
+| glcm_correlation_d1 | 0 | 0 |
+| glcm_correlation_d3 | 0 | 0 |
+| int_entropy | 0 | 0 |
+| int_p90 | 0 | 0 |
+| int_skewness | 0 | 0 |
+| int_std | 0 | 0 |

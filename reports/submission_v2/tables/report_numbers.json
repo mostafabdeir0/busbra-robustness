@@ -1,0 +1,119 @@
+{
+  "original": {
+    "logreg|erosion_mild": {
+      "delta_pp": -16.77,
+      "flip_pct": 31.6
+    },
+    "logreg|dilation_mild": {
+      "delta_pp": -15.66,
+      "flip_pct": 30.0
+    },
+    "logreg|erosion_moderate": {
+      "delta_pp": -2.57,
+      "flip_pct": 9.4
+    },
+    "logreg|dilation_moderate": {
+      "delta_pp": -3.92,
+      "flip_pct": 9.5
+    },
+    "logreg|shift_left_moderate": {
+      "delta_pp": -0.78,
+      "flip_pct": 2.0
+    },
+    "logreg|shift_right_moderate": {
+      "delta_pp": -0.59,
+      "flip_pct": 1.5
+    },
+    "logreg|shift_up_moderate": {
+      "delta_pp": -0.75,
+      "flip_pct": 3.5
+    },
+    "logreg|shift_down_moderate": {
+      "delta_pp": -0.34,
+      "flip_pct": 2.9
+    },
+    "svm|erosion_mild": {
+      "delta_pp": -6.58,
+      "flip_pct": 16.3
+    },
+    "svm|dilation_mild": {
+      "delta_pp": -5.9,
+      "flip_pct": 14.8
+    },
+    "svm|erosion_moderate": {
+      "delta_pp": -0.18,
+      "flip_pct": 4.9
+    },
+    "svm|dilation_moderate": {
+      "delta_pp": -0.71,
+      "flip_pct": 5.5
+    },
+    "svm|shift_left_moderate": {
+      "delta_pp": 0.02,
+      "flip_pct": 1.2
+    },
+    "svm|shift_right_moderate": {
+      "delta_pp": 0.04,
+      "flip_pct": 1.1
+    },
+    "svm|shift_up_moderate": {
+      "delta_pp": 0.21,
+      "flip_pct": 1.6
+    },
+    "svm|shift_down_moderate": {
+      "delta_pp": 0.0,
+      "flip_pct": 1.6
+    }
+  },
+  "coherent": {
+    "logreg|erosion_mild": -0.45,
+    "logreg|dilation_mild": -1.43,
+    "logreg|erosion_moderate": -0.71,
+    "logreg|dilation_moderate": -2.54,
+    "svm|erosion_mild": -0.56,
+    "svm|dilation_mild": 0.18,
+    "svm|erosion_moderate": -0.55,
+    "svm|dilation_moderate": -0.98
+  },
+  "never_selected": [
+    "glcm_contrast_d3",
+    "glcm_correlation_d1",
+    "glcm_correlation_d3",
+    "int_entropy",
+    "int_p90",
+    "int_skewness",
+    "int_std"
+  ],
+  "fold": {
+    "logreg": {
+      "mean": 84.15,
+      "sd": 2.02
+    },
+    "svm": {
+      "mean": 84.71,
+      "sd": 2.88
+    }
+  },
+  "complexity": {
+    "LR": {
+      "Model": "LR",
+      "Fit, no tuning (ms, median [IQR])": "28.4 [27.9-29.1]",
+      "Predict one patient (ms)": "2.43 [2.42-2.45]",
+      "Compressed model (KB)": "1.5",
+      "Tuning candidates": 10
+    },
+    "SVM": {
+      "Model": "SVM",
+      "Fit, no tuning (ms, median [IQR])": "12.9 [12.8-13.0]",
+      "Predict one patient (ms)": "2.56 [2.55-2.57]",
+      "Compressed model (KB)": "91.6",
+      "Tuning candidates": 18
+    }
+  },
+  "benchmark_setup": {
+    "fit_images": 1200,
+    "fit_patients": 680,
+    "repeats": 10
+  },
+  "extract_ms_per_image": 2.99
+}

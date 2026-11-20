@@ -1,0 +1,26 @@
+{
+  "patients": 851,
+  "balanced_accuracy": 0.8706814760465027,
+  "sensitivity": 0.8540145985401459,
+  "specificity": 0.8873483535528596,
+  "roc_auc": 0.9351667952788777,
+  "tn": 512,
+  "fp": 65,
+  "fn": 40,
+  "tp": 234,
+  "method": "nested patient-level CV (5 locked outer folds, 3 inner folds)",
+  "features": 23,
+  "threshold": 0.0,
+  "threshold_status": "provisional raw margin (not calibrated probability)",
+  "score_type": "SVC decision_function margin, patient-mean",
+  "probability_calibration": "not performed; must use grouped CV later",
+  "test_patients_used": 0,
+  "elapsed_cv_seconds": 5.399,
+  "development_reference_model_settings": {
+    "C": 10.0,
+    "gamma": 0.01,
+    "balance": true,
+    "mean_inner_ba": 0.8714525817899131,
+    "mean_inner_auc": 0.9391857303671397
+  }
+}

@@ -1,0 +1,324 @@
+# Breast ultrasound classification under lesion boundary uncertainty
+
+Mostafa Bdeir and Hadi Fardan
+
+Final report | 2026-11-20 | Code, tests, saved results and the trained model: <https://github.com/mostafabdeir0/busbra-robustness>
+
+## Abstract
+
+Computer-aided diagnosis of breast ultrasound lesions often starts from an outlined lesion, but outlines are imperfect. We study how small changes to the lesion boundary affect benign-versus-malignant classification on BUS-BRA (1,875 images from 1,064 patients), using 23 handcrafted shape, intensity and masked-texture features and two classifiers on identical inputs: a tuned L2 logistic regression (LR) and a tuned RBF support vector machine (SVM). Evaluation is patient-level throughout: nested grouped cross-validation, patient-level probability calibration, and one locked hold-out of 213 patients scored once.
+
+On the hold-out, the calibrated SVM reached balanced accuracy 81.85% (95% interval 75.96-87.43) against 80.42% for LR. The paired difference of +1.42 points has an interval of [0.00, 3.29], three more patients were classified correctly, and LR had slightly better AUC and probability losses, so the evidence does not support preferring the SVM by default. The SVM's extra cost is not compute (fit and prediction take milliseconds for both) but a model about 60 times larger, a larger tuning grid and lower interpretability. At the fixed 0.5 threshold the SVM missed 20 of 68 malignant patients.
+
+Measured boundary sensitivity depended strongly on how the boundary edits were built. Under our first, pixel-scattering construction, development balanced accuracy fell by 16.8 and 15.7 points for LR under mild erosion and dilation, against 6.6 and 5.9 points for the SVM, so the nonlinear model was less sensitive, not more. A spatially coherent alternative shrank all these losses to at most 2.5 points. A training-only stability feature-selection procedure, compared with a matched all-feature model, did not improve the development accuracy-robustness objective.
+
+## 1. Introduction
+
+### 1.1 Motivation
+
+Breast ultrasound is widely used to characterise suspicious lesions, and computer-aided diagnosis systems aim to help separate benign from malignant findings [11]. Many of them work in two stages: a lesion is first delineated, by a radiologist or an automatic method [12], and a classifier then describes and labels the outlined region. Handcrafted shape and texture descriptors computed inside the outline have a long history in this setting [5, 8], and they make the classifier depend on the boundary: the same ultrasound image gives different features when the contour moves. Studies in CT and breast MRI have shown that radiomic features can change under image perturbation and under different manual delineations [6, 7], but classifiers are usually evaluated on a single fixed set of reference masks.
+
+Our task starts from an identified, outlined lesion. It is not whole-image cancer detection, and the masks are the dataset's provided expert masks.
+
+### 1.2 Research question
+
+Following the approved proposal: *Do nonlinear classifiers improve breast-lesion classification while becoming more sensitive to imperfect lesion boundaries, and can stable-feature selection reduce that sensitivity without sacrificing clean-data performance?*
+
+### 1.3 Approach
+
+We use BUS-BRA v1.0 [1, 2], which has biopsy-based labels, expert lesion masks and several images per patient for many patients. All splits are by patient. From each image and mask we compute 23 fixed descriptors (six shape, seven intensity, ten masked texture). The model ladder has two levels on identical inputs. Level 1 is L2-regularised logistic regression. Level 2 is an RBF-kernel SVM [13], which can represent nonlinear relationships between the same features and is the smallest step up that isolates model flexibility from feature choice. Both are tuned by nested patient-grouped cross-validation and calibrated at the patient level [9]. A 20% patient hold-out is scored once with frozen models, and intervals use paired patient-level bootstrap resampling [10].
+
+Three experiments follow the proposal: (1) a clean-mask comparison of LR and SVM; (2) a boundary-sensitivity stress test with synthetic erosion, dilation and translation of the mask, models fixed; (3) a mitigation experiment that selects features by stability under boundary edits, using training data only, and compares the result with a matched all-feature model.
+
+### 1.4 Findings in brief
+
+- The calibrated SVM scored slightly higher than LR on held-out balanced accuracy (81.85% against 80.42%) but not clearly so, and LR was better on AUC, Brier score and log loss.
+- Boundary sensitivity depended on the edit construction. Under the original construction the SVM lost less accuracy than LR; under the coherent construction both lost little.
+- Stability selection did not help, and the final models keep all 23 features.
+- The SVM missed 20 of 68 malignant test patients at the fixed threshold. This is a methodological study, not a deployment recommendation.
+
+### 1.5 Contributions
+
+1. A leakage-controlled, patient-level pipeline with frozen protocols and a single locked hold-out evaluation.
+2. A paired linear-versus-nonlinear comparison on the same handcrafted features, with uncertainty intervals, calibration, and a measured account of cost.
+3. Evidence that measured boundary sensitivity can be dominated by how the perturbation is constructed, with both constructions reported.
+4. A negative result for training-only stability feature selection under a matched comparator.
+5. A development pipeline that was rerun from the raw archive and reproduced every development number and the final model file exactly (Section 6).
+
+## 2. Dataset
+
+BUS-BRA version 1.0 is the public dataset of Gomez-Flores, Gregorio-Calas and Pereira [1, 2]. We classify benign versus malignant pathology using the provided lesion delineations. BI-RADS labels, patient identifiers and scanner metadata are not model inputs. The 1,875 image-mask pairs and 1,064 patients were checked on download (no empty or non-binary masks, no image-mask size mismatches; four CSV-versus-image dimension discrepancies were noted and are non-blocking).
+
+| Cohort | Images | Patients | Benign | Malignant |
+| --- | --- | --- | --- | --- |
+| All patients | 1875 | 1064 | 722 | 342 |
+| Development | 1514 | 851 | 577 | 274 |
+| Held-out test | 361 | 213 | 145 | 68 |
+
+The random seed is 42. Patients, not images, define the 80/20 development/test separation and five locked outer folds. Images are converted to grayscale and resized with preserved aspect ratio to a longest side of 256 pixels; masks use nearest-neighbour interpolation.
+
+## 3. Models and methods
+
+### 3.1 Features
+
+The 23 features comprise six shape (area fraction, aspect ratio, eccentricity, solidity, extent, circularity), seven intensity (mean, SD, median, 10th and 90th percentiles, skewness, entropy) and ten masked texture features (contrast, dissimilarity, homogeneity, angular second moment and correlation at gray-level co-occurrence distances one and three [8]). Masked co-occurrence pairs are counted only when both pixels lie inside the lesion. The extractor fixes intensity normalisation, quantisation to 32 levels and averaging over four directions.
+
+### 3.2 Models and tuning
+
+Logistic regression is the classical baseline: it is regularised, interpretable through its coefficients, and strong on small tabular feature sets. The RBF SVM is the Level 2 model. LR tunes C over 0.01, 0.1, 1, 10 and 100 (10 candidates with class balancing off or on). The SVM tunes C over 0.1, 1 and 10 and gamma over scale, 0.01 and 0.1 (18 candidates with balancing off or on). Each patient contributes total training weight one across their views, with optional class balancing, and patient scores average the image scores. Scaling and fitting use training folds only. The original inner objective is patient balanced accuracy (BA), with AUC and simpler settings as tie-breakers.
+
+The settings chosen in each outer fold of the original baselines were:
+
+{{T:chosen_hyperparameters}}
+
+The final calibrated ensembles each have three members (Section 3.6) with the following selected settings. LR: (C=0.1, balanced), (C=10, unbalanced), (C=0.1, balanced). SVM: (C=1, gamma=scale, balanced), (C=10, gamma=0.01, balanced), (C=1, gamma=0.01, balanced).
+
+### 3.3 Validation protocol
+
+Development uses five locked outer patient folds and three inner patient-stratified folds for tuning. Clean scaling and classifier fitting never use perturbed training masks. The 20% test cohort is untouched until the frozen models are scored once. The final calibration uses additional patient-disjoint base and calibration splits.
+
+### 3.4 Boundary-edit constructions
+
+Eight predefined conditions were used on development data: mild and moderate erosion and dilation (targeting intersection-over-union of about 0.95 and 0.90 with the original mask) and shifts of the mask left, right, up and down (about 0.90). The **original construction** erodes or dilates by choosing boundary pixels in order of distance to the contour, with a pseudo-random tie-break, which can scatter isolated pixel changes around the contour. After this produced unexpectedly large mild-condition losses, we added a **coherent construction** that grows a single connected patch near one contour anchor; mild and moderate edits are nested. The original results were preserved, and the coherent analysis is labelled post hoc. Neither construction is validated as a model of real annotation error.
+
+### 3.5 Stability feature selection (and how stability was balanced against accuracy)
+
+Stability was ranked separately inside every training partition, never on validation or test patients. For each of the four coherent edits we measured each feature's absolute change per image, averaged within patient and then across patients, and divided by the clean training standard deviation. A feature's stability score is the largest of its four condition scores (lower is better). Stability alone does not make a feature informative, so ranking only proposes candidates: for subset sizes of 5, 10 and 15, and for an all-23 comparator, the model grids were tuned with an objective that gives clean BA and the four perturbed BAs equal weight, averaged over three inner folds. Clean performance therefore carries one fifth of the objective, so the procedure can trade some clean accuracy for stability, and the nested results measure that trade. Subsets were reranked on outer training patients before each outer refit; no global feature list was used.
+
+### 3.6 Probability calibration
+
+Within each outer training pool, each of three ensemble members reserves one of three patient folds for calibration. Its base model is tuned on the other two folds and fitted only on clean base images. Calibration receives one clean score per reserved patient (the logit of the mean LR image probability, or the mean SVM margin), and a regularised sigmoid [9] (standardiser followed by logistic regression, C=1) is fitted to those scores. Base tuning, base fitting and calibration patients are disjoint. At prediction time, image scores are aggregated within each member, calibrated at patient level, and the three probabilities are averaged. The decision threshold is fixed at 0.5.
+
+### 3.7 Deviations from the proposal
+
+Table 1 lists what the approved proposal said, what was done, why, and whether the decision preceded access to the test set.
+
+| Proposed | Final procedure | Reason | Before test access? |
+| --- | --- | --- | --- |
+| Mean balanced-accuracy drop under eight predefined masks is the primary endpoint of the stress test | The headline held-out result is clean SVM balanced accuracy; boundary sensitivity is reported per condition with paired intervals | SVM was designated primary from the development five-condition objective. This is a post-hoc, development-based choice, not a significance claim | Yes: protocol frozen before the held-out evaluation |
+| Eight boundary conditions: erosion, dilation, translation | All eight were assessed on development data. The held-out evaluation used the four erosion and dilation conditions | Later stages require complete paired coverage for every patient, which erosion and dilation provide and translations do not (849 and 841 of 851 development patients had valid left and right shifts) | Yes |
+| One edit construction per condition | A second, coherent construction was added; both are reported | The first construction produced unexpectedly large mild-condition losses; the diagnosis pointed to scattered pixel changes | Yes (post-hoc development diagnostic) |
+| Operating threshold chosen in grouped cross-validation | Fixed threshold of 0.5, not tuned | The protocol fixes 0.5 as a research threshold and forbids switching methods after seeing outer results, so that the operating point is not chosen after the sensitivity-specificity trade-off is visible | Yes |
+| Calibration and confidence reliability | Patient-level sigmoid calibration in a three-member ensemble with disjoint base, tuning and calibration patients | Keeps calibration free of leakage from tuning and outer-validation patients | Yes |
+| Stable features chosen from development data, then retrain (Experiment 3) | Frozen nested procedure with k in {5, 10, 15} and a matched all-23 comparator | A matched comparator attributes any change to feature selection | Yes: design frozen first; result negative |
+| Runtime and confidence in Experiment 1 | Development-only timing benchmark (Section 4.9) | Runtimes were not retained for the calibration or test stages of the original run | Not applicable |
+| Level 2 comparison subject to instructor approval; the feedback suggested an optional CNN | RBF SVM as Level 2; no CNN | A CNN would need its own perturbed-crop protocol and could not be scored on the locked test set without a new protocol (Section 5) | Not applicable |
+
+Order of decisions: data audit and patient splits; clean features; LR and SVM baselines; original eight-condition stress test; diagnosis and coherent alternative; frozen stability design; nested stability evaluation; calibration and final protocol freeze; one locked held-out evaluation; report from saved predictions. Original step numbers are listed in the appendix.
+
+## 4. Results
+
+### 4.1 Clean development baselines
+
+The first experiment established clean nested patient-level baselines on development data.
+
+| Original clean baseline | BA (%) | AUC |
+| --- | --- | --- |
+| Logistic Regression | 86.89 | 0.9304 |
+| RBF SVM | 87.07 | 0.9352 |
+
+Fold-to-fold variation of the calibrated development predictions shows how sensitive conclusions are to the split. Balanced accuracy differs by about two to three points across the five outer folds, which is larger than the gap between the two classifiers:
+
+{{T:fold_variation}}
+
+### 4.2 Boundary sensitivity on development data
+
+{{T:original_eight_conditions}}
+
+Table: original construction, eight conditions, development data (patient-level paired changes relative to each model's own clean baseline; "Flip" is the share of patients whose predicted class changed).
+
+Under the original construction, mild erosion and dilation cost LR 16.8 and 15.7 balanced-accuracy points and flipped about 30% of its predictions, against 6.6 and 5.9 points and about 15-16% for the SVM. Moderate edits and all translations were much smaller for both models (LR up to 3.9 points; SVM up to 0.7 points). The coherent construction produced much smaller changes for both models:
+
+{{T:coherent_development}}
+
+Table: coherent construction, development data.
+
+![Figure 1. Original and coherent development BA changes for the same original clean-model procedure. This is a perturbation-construction comparison, not the final calibrated test model.](figures/06_original_and_coherent.png)
+
+Figure 1. Original and coherent development BA changes for the same original clean-model procedure. This is a perturbation-construction comparison, not the final calibrated test model.
+
+**Answer to the research question, kept condition-specific.** Under the original construction on development data, the SVM was less sensitive than LR, not more. This is not a general claim about nonlinear models: the gap shrank under the coherent construction, the final calibrated models differ from the ones in this experiment, and on the locked test set the paired changes under coherent edits were small for both models (Section 4.7). Our evidence therefore does not support the hypothesis that the nonlinear model is more boundary-sensitive, and it does not support the opposite as a general statement.
+
+The large original losses are mechanism-dependent: scattered pixel changes alter perimeter-dependent features. This supports sensitivity to how a perturbation is constructed; it does not validate either construction as a realistic clinical annotation-error model. Development bootstrap intervals were exploratory, conditional on saved out-of-fold fits, and omit retraining variability; cross-validation uncertainty needs particular caution because training sets overlap [4].
+
+### 4.3 Stability feature selection (mitigation experiment)
+
+Both the subset arm and the all-23 comparator tuned the same grids and the same objective (mean of clean plus four coherent patient BAs, averaged over three inner folds).
+
+| Model | Arm | Clean BA (%) | Five-condition BA (%) |
+| --- | --- | --- | --- |
+| Logistic Regression | All 23 | 87.35 | 86.15 |
+| Logistic Regression | Stability subset | 84.55 | 84.63 |
+| RBF SVM | All 23 | 87.07 | 86.69 |
+| RBF SVM | Stability subset | 86.87 | 86.11 |
+
+![Figure 2. Matched nested development comparison. These are point estimates for the complete selection procedures; the plot does not imply statistical significance.](figures/07_feature_selection.png)
+
+Figure 2. Matched nested development comparison. These are point estimates for the complete selection procedures; the plot does not imply statistical significance.
+
+The subset procedure did not improve the pooled five-condition objective, and its lower clean accuracy can make relative BA-change comparisons look favourable even when absolute perturbed accuracy stays lower. Both classifiers selected 15 features in every outer fold, and the rankings were identical for the two classifiers because stability scoring does not use the classifier. Fourteen features were selected in all five folds; shape extent was selected in four folds and shape axis ratio in one. Seven features were never selected: intensity SD, skewness, entropy and 90th percentile, texture correlation at both distances, and contrast at distance three.
+
+{{T:stability_frequency}}
+
+The negative finding applies to this frozen score, candidate sizes and objective; it does not show that all stability-aware methods fail.
+
+### 4.4 Calibrated development performance
+
+At 0.5, calibrated outer-fold sensitivity fell and specificity rose relative to the earlier single-refit estimators. The ensemble has different member training sizes and settings, so cross-step differences cannot be attributed only to the sigmoid. The threshold was not changed after this trade-off was observed.
+
+| Calibrated outer CV | BA (%) | Sensitivity (%) | Specificity (%) | Brier |
+| --- | --- | --- | --- | --- |
+| Logistic Regression | 84.16 | 72.99 | 95.32 | 0.0915 |
+| RBF SVM | 84.73 | 75.18 | 94.28 | 0.0888 |
+
+### 4.5 Locked held-out performance
+
+The test cohort contains 145 benign and 68 malignant patients. Intervals are pointwise percentiles from 10,000 shared patient resamples within diagnosis (seed 42), conditional on the frozen models [10].
+
+| Metric | LR estimate [95% interval] | SVM estimate [95% interval] |
+| --- | --- | --- |
+| Balanced accuracy (%) | 80.42 [74.28, 86.26] | 81.85 [75.96, 87.43] |
+| Sensitivity (%) | 69.12 [57.35, 79.41] | 70.59 [58.82, 80.88] |
+| Specificity (%) | 91.72 [86.90, 95.86] | 93.10 [88.28, 97.24] |
+| ROC AUC | 0.9177 [0.8747, 0.9547] | 0.9142 [0.8691, 0.9533] |
+| Brier score | 0.1024 [0.0768, 0.1295] | 0.1030 [0.0761, 0.1321] |
+| Log loss | 0.3296 [0.2594, 0.4060] | 0.3397 [0.2616, 0.4260] |
+
+![Figure 3. Clean held-out operating-point metrics and AUC. Bars show pointwise 95% patient-bootstrap intervals; the displayed vertical scale is shared across panels.](figures/01_clean_metrics.png)
+
+Figure 3. Clean held-out operating-point metrics and AUC. Bars show pointwise 95% patient-bootstrap intervals; the displayed vertical scale is shared across panels.
+
+![Figure 4. Clean test ROC curves from saved probabilities. AUC measures ranking over thresholds and differs from BA at the fixed operating point.](figures/02_clean_roc.png)
+
+Figure 4. Clean test ROC curves from saved probabilities. AUC measures ranking over thresholds and differs from BA at the fixed operating point.
+
+**What the SVM improves, and what that costs (Level 2 verdict).** The SVM's clean BA is 1.42 points higher (paired interval [0.00, 3.29]), and it classified three more of the 213 patients correctly. LR had the better AUC, Brier score and log loss. The improvement is therefore small and not distinguishable from noise at this sample size. The cost is not compute, which is negligible for both models (Section 4.9), but a model about 60 times larger, a tuning grid of 18 rather than 10 candidates, and a decision function that cannot be read off coefficients as LR's can. On this evidence the SVM's advantage does not justify preferring it by default; the simpler LR is the better default unless a larger evaluation shows a clear gain.
+
+The test is an internal patient hold-out, not an independent external clinical cohort. Secondary intervals are not adjusted for multiple comparisons. No threshold, feature or model changes followed the test results.
+
+### 4.6 Probability reliability and diagnostic errors
+
+At 0.5, LR had 21 false negatives and 12 false positives; the SVM had 20 and 10. SVM sensitivity was 70.59% and specificity 93.10%. An AUC near 0.91 does not remove the missed-malignancy burden at this threshold.
+
+![Figure 5. Ten fixed-width reliability bins. Marker size reflects patient count; connecting lines do not establish reliable behaviour in sparsely populated regions.](figures/03_reliability.png)
+
+Figure 5. Ten fixed-width reliability bins. Marker size reflects patient count; connecting lines do not establish reliable behaviour in sparsely populated regions.
+
+![Figure 6. Frozen-threshold confusion matrices. Counts are patients, not individual image views.](figures/04_confusion.png)
+
+Figure 6. Frozen-threshold confusion matrices. Counts are patients, not individual image views.
+
+### 4.7 Held-out boundary sensitivity (coherent edits)
+
+Every test image had all four valid coherent feature vectors, and all paired comparisons keep the same patients and views. A positive change means higher perturbed BA relative to the model's own clean baseline; it does not imply that segmentation errors are beneficial. Some edits raise BA by moving a small number of scores across 0.5 while ranking AUC or probability losses worsen: dilation lowers AUC for both classifiers in this cohort.
+
+| Model | Condition | Delta BA (pp) | Flip (%) | New FN | Recovered FN |
+| --- | --- | --- | --- | --- | --- |
+| LR | Mild dilation | +0.78 | 1.88 | 0 | 2 |
+| LR | Moderate dilation | +2.25 | 3.76 | 0 | 4 |
+| LR | Mild erosion | +0.74 | 0.47 | 0 | 1 |
+| LR | Moderate erosion | +0.00 | 1.88 | 2 | 2 |
+| SVM | Mild dilation | +1.95 | 4.69 | 0 | 5 |
+| SVM | Moderate dilation | +1.17 | 3.76 | 0 | 3 |
+| SVM | Mild erosion | +0.05 | 1.41 | 0 | 1 |
+| SVM | Moderate erosion | +0.39 | 0.94 | 0 | 1 |
+
+![Figure 7. Held-out perturbed-minus-clean BA changes with paired pointwise 95% intervals. Zero denotes no aggregate BA change, not zero individual prediction changes.](figures/05_heldout_boundary_changes.png)
+
+Figure 7. Held-out perturbed-minus-clean BA changes with paired pointwise 95% intervals. Zero denotes no aggregate BA change, not zero individual prediction changes.
+
+### 4.8 Failure analysis
+
+**Where errors concentrate (development, calibrated out-of-fold predictions).** We split patients by mean lesion size (tertiles of the mean area fraction of their images) and by number of views.
+
+{{T:failure_breakdown}}
+
+Malignant lesions in the smallest size tertile were missed most often (40-43%, but only 30 patients, so this is imprecise), and large benign lesions were most often called malignant (11.5-12.2%). Malignant patients with a single view were missed more often than those with two views (31.6% against 23.0-25.8%). These are descriptive associations within development data; we infer no biological cause from them.
+
+**Held-out confidence errors.** Thirty held-out patients were misclassified by both models, three by LR only and none by the SVM only; 180 were correct for both, and 20 malignant patients were missed by both. The six most confident errors (lowest-probability SVM false negatives and highest-probability false positives, chosen deterministically) are listed below. This is a descriptive audit, not a blinded clinical review, and no image-quality, subtype or scanner cause is inferred from a probability alone.
+
+| Example category | Dataset case | Actual | LR probability | SVM probability |
+| --- | --- | --- | --- | --- |
+| SVM false negative | 434 | Malignant | 0.0402 | 0.0306 |
+| SVM false negative | 78 | Malignant | 0.0385 | 0.0352 |
+| SVM false negative | 459 | Malignant | 0.1727 | 0.0834 |
+| SVM false positive | 427 | Benign | 0.9484 | 0.9592 |
+| SVM false positive | 643 | Benign | 0.8765 | 0.9561 |
+| SVM false positive | 966 | Benign | 0.9065 | 0.9407 |
+
+**Mitigations.** The boundary-sensitivity failure mode was addressed with stability-based feature selection (Section 4.3), which did not help. For the missed-malignancy failure mode, the natural mitigation is a sensitivity-oriented operating threshold. We did not apply it: the threshold was frozen before the test set was scored, and choosing one after seeing the test errors would contaminate the evaluation. We therefore propose it as follow-up work, defined on development data and locked before evaluation on new data (Section 5).
+
+### 4.9 Complexity and resource analysis
+
+Timings are from one development fold (1,200 images, 680 patients), with the settings selected for that fold and no tuning, 10 repeats after a warm-up, on one Windows 11 machine with an Intel CPU. They are comparable operations, not the three-member calibrated ensembles. They are meant to show orders of magnitude and are not a general speed claim; in particular, the SVM fitted faster than LR here only for these selected settings.
+
+{{T:complexity}}
+
+Preparing one image (preprocessing plus the 23 features) took about 3.0 ms, which is of the same order as predicting one patient with either classifier (about 2.5 ms including aggregation). The classifier is therefore not the cost driver in either model, and the SVM's cost shows up elsewhere: the compressed single-model file is about 92 KB against 1.5 KB for LR, the tuning grid has 18 rather than 10 candidates, and the final calibrated ensemble holds 1,303 support vectors against 69 linear coefficients. Fit counts for the full procedures, including nested search:
+
+| Stage | Inner base fits | Base refits | Sigmoid fits | Recorded seconds |
+| --- | --- | --- | --- | --- |
+| Nested feature selection | 1680 | 20 | 0 | 125.9 |
+| Nested calibration and final fit | 1512 | 36 | 36 | Not recorded |
+| Held-out evaluation | 0 | 0 | 0 | Not recorded |
+
+The subset arm has an additional k search, so matched grids do not imply equal search budgets. Runtimes for the original calibration and test stages were not retained. In the rerun described in Section 6 the whole development pipeline, from the raw archive to the calibrated model, took about six minutes on the same machine.
+
+## 5. Conclusion and future work
+
+The completed project supports three conclusions. Perturbation construction materially affects measured boundary robustness, so any robustness claim must name the construction. The frozen stability-subset procedure did not improve the overall development objective. The frozen calibrated SVM reached a held-out BA of 81.85% with a substantial sensitivity limitation (70.6% at the fixed threshold), and it is not clearly better than logistic regression, which has better AUC and probability losses, a far smaller model and interpretable coefficients. Complexity is therefore not justified by the improvement obtained here.
+
+Limitations. The data come from one public dataset; patient separation prevents view leakage but does not establish scanner-, institution- or population-independent generalisation. The study uses provided masks and does not evaluate an end-to-end system with an automatic segmenter. Boundary edits are synthetic and deterministic, and their overlap targets are not guaranteed to be clinically plausible. Development-informed choices are not retrospective preregistration. Calibration does not establish clinical risk validity, and the 0.5 threshold was not chosen for clinical costs. Intervals are pointwise and conditional on fixed fits; they omit retraining and external-distribution variability. Our lesion-size and view-count findings are descriptive.
+
+Future work. (1) A pretrained CNN on mask-bounded crops, with and without mask-jitter augmentation as a mitigation for boundary uncertainty, using the same patient-grouped development folds and calibration and a fresh external evaluation. (2) A sensitivity-oriented operating threshold defined on development data and locked before evaluation on new data. (3) Independent data, multiple annotators and an automatic segmenter, to test whether the findings extend to realistic boundary variation. (4) Stability-aware methods beyond the frozen score, for example selection that jointly considers informativeness and drift.
+
+## 6. Reproducibility and code availability
+
+Repository: <https://github.com/mostafabdeir0/busbra-robustness>. It contains the source, 198 automated tests (synthetic fixtures, no dataset needed), the original report and figures, this revision, `RUN_ORDER.md`, the notebook `notebooks/BUS_BRA_submission.ipynb`, and the trained model in `models/`.
+
+**Trained model.** `models/frozen_calibrated_models.joblib` (0.22 MiB) holds the final three-member calibrated LR and SVM ensembles. Its SHA-256 is `627ef9df92e4b12b475a12c844b53e82e9dd7fefe05a9f07c3b94ca7c77f3586`, the digest recorded for the original frozen model in the report manifest of the original run.
+
+**Independent rerun.** On 2026-11-20 we reran the complete development pipeline from the raw archive (BUSBRA.zip, MD5 1f8b2be6476d58fc97bfb5e5a1ea9bab) with the pinned library versions (Python 3.14.6; the original run used 3.14.3; numpy 2.5.4, pandas 3.0.6, scikit-learn 1.9.1, scipy 1.18.1, scikit-image 0.26.0), in a separate copy of the repository, with fresh output directories. Every development number quoted in Sections 4.1 to 4.4 was reproduced exactly: LR and SVM baselines (86.89% / 0.9304 and 87.07% / 0.9352), the four stability-arm results, and the calibrated outer-fold results. The regenerated model bundle is byte-identical to the original. The held-out evaluation was not rerun, no held-out file was read, and no held-out marker was created. The tables in Sections 4.1 to 4.9 that were not in the original report were produced by `analysis/build_report_tables.py` from these development outputs.
+
+**Notebook.** The notebook runs in a fast mode from the saved files in the repository, including recomputing the clean held-out metrics from the saved patient probabilities, and in a full mode that reruns the development pipeline from the archive. Neither mode runs the locked held-out evaluation.
+
+## References
+
+[1] Gomez-Flores W, Gregorio-Calas MJ, Pereira WCA. BUS-BRA: A Breast Ultrasound Dataset for Assessing Computer-aided Diagnosis Systems. Medical Physics. 2024;51:3110-3123. DOI: 10.1002/mp.16812.
+
+[2] BUS-BRA version 1.0 dataset. Zenodo. https://zenodo.org/records/8231412. Dataset DOI: 10.5281/zenodo.8231412.
+
+[3] Scikit-learn documentation. Probability calibration. https://scikit-learn.org/stable/modules/calibration.html. Also: Nested versus non-nested cross-validation, https://scikit-learn.org/stable/auto_examples/model_selection/plot_nested_cross_validation_iris.html.
+
+[4] Bates S, Hastie T, Tibshirani R. Cross-validation: what does it estimate and how well does it do it? arXiv:2104.00673.
+
+[5] Gomez Flores W, Pereira WCA, Infantosi AFC. Improving classification performance of breast lesions on ultrasonography. Pattern Recognition. 2015;48(4):1125-1136. DOI: 10.1016/j.patcog.2014.06.006.
+
+[6] Zwanenburg A, Leger S, Agolli L, et al. Assessing robustness of radiomic features by image perturbation. Scientific Reports. 2019;9. DOI: 10.1038/s41598-018-36938-4.
+
+[7] Granzier RWY, Verbakel NMH, Ibrahim A, et al. MRI-based radiomics in breast cancer: feature robustness with respect to inter-observer segmentation variability. Scientific Reports. 2020;10. DOI: 10.1038/s41598-020-70940-z.
+
+[8] Haralick RM, Shanmugam K, Dinstein I. Textural features for image classification. IEEE Transactions on Systems, Man, and Cybernetics. 1973;SMC-3(6):610-621. DOI: 10.1109/TSMC.1973.4309314.
+
+[9] Platt JC. Probabilistic outputs for support vector machines and comparisons to regularized likelihood methods. In: Advances in Large Margin Classifiers. MIT Press; 1999.
+
+[10] Efron B. Bootstrap methods: another look at the jackknife. Annals of Statistics. 1979;7(1):1-26. DOI: 10.1214/aos/1176344552.
+
+[11] Cheng HD, Shan J, Ju W, Guo Y, Zhang L. Automated breast cancer detection and classification using ultrasound images: A survey. Pattern Recognition. 2010;43(1):299-317. DOI: 10.1016/j.patcog.2009.05.012.
+
+[12] Xian M, Zhang Y, Cheng HD, et al. Automatic breast ultrasound image segmentation: A survey. Pattern Recognition. 2018;79:340-355. DOI: 10.1016/j.patcog.2018.02.012.
+
+[13] Cortes C, Vapnik V. Support-vector networks. Machine Learning. 1995;20(3):273-297. DOI: 10.1007/BF00994018.
+
+## Appendix. Historical checkpoint names
+
+| Label | Description |
+| --- | --- |
+| 14 | Original paired development robustness |
+| 16 | Coherent development comparison |
+| 17 | Development uncertainty |
+| 18 | Stability design |
+| 19 | Nested feature selection |
+| 20 | Patient calibration and final model freeze |
+| 21 | Locked held-out evaluation |
+| 22 | Final scientific report |

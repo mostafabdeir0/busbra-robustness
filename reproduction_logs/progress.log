@@ -1,0 +1,25 @@
+=== 03_features: python -m src.features --all-development
+    exit=0 seconds=7
+=== 04_logreg: python -m src.models
+    exit=0 seconds=4
+=== 05_svm: python -m src.svm_model
+    exit=0 seconds=9
+=== 06_perturbations: python -m src.perturbations --all-development
+    exit=0 seconds=47
+=== 07_perturbed_features: python -m src.perturbed_features --all-development
+    exit=0 seconds=81
+=== 08_robustness_eval: python -m src.robustness_eval
+    exit=0 seconds=3
+=== 09a_coherent_perturbations: python -m src.coherent_perturbations --all-development
+    exit=0 seconds=42
+=== 09b_coherent_features: python -m src.coherent_features --all-development
+    exit=0 seconds=38
+=== 10_coherent_eval: python -m src.coherent_eval
+    exit=0 seconds=2
+=== 11_stable_selection: python -m src.stable_selection
+    exit=0 seconds=2
+=== 12_stable_evaluation: python -m src.stable_evaluation
+    exit=0 seconds=65
+=== 13_patient_calibration: python -m src.patient_calibration
+    exit=0 seconds=42
+ALL STAGES FINISHED

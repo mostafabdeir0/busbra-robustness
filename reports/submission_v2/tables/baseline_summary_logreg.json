@@ -1,0 +1,24 @@
+{
+  "patients": 851,
+  "balanced_accuracy": 0.8688566585282547,
+  "sensitivity": 0.8503649635036497,
+  "specificity": 0.8873483535528596,
+  "roc_auc": 0.9304418778226164,
+  "brier_score": 0.09764728884548028,
+  "tn": 512,
+  "fp": 65,
+  "fn": 41,
+  "tp": 233,
+  "method": "nested grouped CV (5 locked outer folds, 3 inner patient-stratified folds)",
+  "threshold": 0.5,
+  "threshold_status": "provisional (not clinically calibrated)",
+  "features": 23,
+  "test_patients_used": 0,
+  "elapsed_cv_seconds": 2.073,
+  "development_reference_model_settings": {
+    "C": 1.0,
+    "balance": true,
+    "mean_inner_ba": 0.873334822487746,
+    "mean_inner_auc": 0.9339908682022624
+  }
+}

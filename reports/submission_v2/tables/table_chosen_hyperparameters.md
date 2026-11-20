@@ -1,0 +1,12 @@
+| Model | Outer fold | C | gamma | Class balancing | Outer-fold BA (%) |
+| --- | --- | --- | --- | --- | --- |
+| LR | 0 | 100 | - | on | 83.5 |
+| LR | 1 | 10 | - | on | 84.6 |
+| LR | 2 | 100 | - | on | 88.0 |
+| LR | 3 | 1 | - | on | 89.4 |
+| LR | 4 | 1 | - | on | 88.9 |
+| SVM | 0 | 1 | scale | on | 85.4 |
+| SVM | 1 | 1 | 0.01 | on | 85.9 |
+| SVM | 2 | 10 | 0.01 | on | 89.3 |
+| SVM | 3 | 1 | scale | on | 86.2 |
+| SVM | 4 | 1 | scale | on | 88.4 |

@@ -1,0 +1,53 @@
+Windows-11-10.0.26200-SP0 | CPU: Intel64 Family 6 Model 183 Stepping 1, GenuineIntel
+
+LR coefficients for this development fold and its selected settings
+int_mean                 6.105952
+glcm_homogeneity_d1     -4.666762
+glcm_dissimilarity_d1   -4.310934
+int_median              -4.196164
+glcm_contrast_d1         2.247101
+shape_circularity       -2.004826
+int_p10                 -1.937790
+glcm_asm_d3             -1.927667
+
+Preprocess and extract, excluding ZIP reads and image decoding (ms/image)
+{'median': 3.0260325002018362, 'q1': 2.961552499618847, 'q3': 3.0621837489889003}
+ model                                           stage  median_ms     q1_ms     q3_ms  fit_images  fit_patients  timed_patients  repeats  compressed_model_bytes
+logreg         fit including scaling, excluding tuning  28.866400 28.528825 29.330725        1200           680              20       10                    1573
+logreg serial patient prediction including aggregation   2.518360  2.485626  2.547489        1200           680              20       10                    1573
+   svm         fit including scaling, excluding tuning  13.308400 12.954375 13.755450        1200           680              20       10                   93750
+   svm serial patient prediction including aggregation   2.691468  2.610564  2.736540        1200           680              20       10                   93750
+
+Development OOF errors by area_tertile and pathology
+                               patients  errors  error_rate
+model  pathology area_tertile                              
+logreg benign    small              254       5    0.019685
+                 middle             192       7    0.036458
+                 large              131      15    0.114504
+       malignant small               30      13    0.433333
+                 middle              91      24    0.263736
+                 large              153      37    0.241830
+svm    benign    small              254       6    0.023622
+                 middle             192      11    0.057292
+                 large              131      16    0.122137
+       malignant small               30      12    0.400000
+                 middle              91      22    0.241758
+                 large              153      34    0.222222
+
+Development OOF errors by views and pathology
+                        patients  errors  error_rate
+model  pathology views                              
+logreg benign    1           131       5    0.038168
+                 2           446      22    0.049327
+       malignant 1            57      18    0.315789
+                 2           217      56    0.258065
+svm    benign    1           131       4    0.030534
+                 2           446      29    0.065022
+       malignant 1            57      18    0.315789
+                 2           217      50    0.230415
+
+Clean OOF balanced accuracy across outer folds
+            mean       std  count
+model                            
+logreg  0.841471  0.020178      5
+svm     0.847111  0.028771      5

@@ -1,0 +1,5 @@
+model,stage,median_ms,q1_ms,q3_ms,fit_images,fit_patients,timed_patients,repeats,compressed_model_bytes
+logreg,"fit including scaling, excluding tuning",28.431750019080937,27.927724993787706,29.116674995748326,1200,680,20,10,1573
+logreg,serial patient prediction including aggregation,2.43124499975238,2.4203662484069355,2.449440000782488,1200,680,20,10,1573
+svm,"fit including scaling, excluding tuning",12.871250015450642,12.779475015122443,12.962824999704026,1200,680,20,10,93750
+svm,serial patient prediction including aggregation,2.556022499629762,2.5519387498206925,2.5743562502611894,1200,680,20,10,93750

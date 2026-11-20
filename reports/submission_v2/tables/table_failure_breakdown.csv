@@ -1,0 +1,21 @@
+Model,Class,Factor,Group,Patients,Errors,Error rate (%)
+LR,Benign,Lesion size,large,131,15,11.5
+LR,Benign,Lesion size,middle,192,7,3.6
+LR,Benign,Lesion size,small,254,5,2.0
+LR,Malignant,Lesion size,large,153,37,24.2
+LR,Malignant,Lesion size,middle,91,24,26.4
+LR,Malignant,Lesion size,small,30,13,43.3
+SVM,Benign,Lesion size,large,131,16,12.2
+SVM,Benign,Lesion size,middle,192,11,5.7
+SVM,Benign,Lesion size,small,254,6,2.4
+SVM,Malignant,Lesion size,large,153,34,22.2
+SVM,Malignant,Lesion size,middle,91,22,24.2
+SVM,Malignant,Lesion size,small,30,12,40.0
+LR,Benign,Views per patient,1,131,5,3.8
+LR,Benign,Views per patient,2,446,22,4.9
+LR,Malignant,Views per patient,1,57,18,31.6
+LR,Malignant,Views per patient,2,217,56,25.8
+SVM,Benign,Views per patient,1,131,4,3.1
+SVM,Benign,Views per patient,2,446,29,6.5
+SVM,Malignant,Views per patient,1,57,18,31.6
+SVM,Malignant,Views per patient,2,217,50,23.0

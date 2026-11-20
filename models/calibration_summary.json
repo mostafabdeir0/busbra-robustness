@@ -1,0 +1,141 @@
+{
+  "base_inner_fits": 1512,
+  "base_refits": 36,
+  "calibration_design": {
+    "arm": "all_23_matched_tuning",
+    "base_tuning_folds": 3,
+    "base_tuning_objective_and_grids": "unchanged Step 18 all-23 robust objective and grids",
+    "base_tuning_seed": "3000 + 10 * scope_code + member_index",
+    "calibration": "three-member split ensemble; each member tuned on base patients and sigmoid-fit on separate clean patients",
+    "calibration_data": "one row per clean calibration patient; no coherent images used for calibration fit",
+    "calibration_folds": 3,
+    "calibration_split_seed": "2020 + scope_code (outer=0..4, final=5)",
+    "calibrator": "training-calibration-patient StandardScaler then LogisticRegression(C=1,max_iter=2000,random_state=42); no class or image weights",
+    "comparator": "logreg",
+    "ensemble_prediction": "mean member calibrated patient probabilities, after patient aggregation within each member",
+    "features": [
+      "shape_area_fraction",
+      "shape_axis_ratio",
+      "shape_eccentricity",
+      "shape_solidity",
+      "shape_extent",
+      "shape_circularity",
+      "int_mean",
+      "int_std",
+      "int_median",
+      "int_p10",
+      "int_p90",
+      "int_skewness",
+      "int_entropy",
+      "glcm_contrast_d1",
+      "glcm_dissimilarity_d1",
+      "glcm_homogeneity_d1",
+      "glcm_asm_d1",
+      "glcm_correlation_d1",
+      "glcm_contrast_d3",
+      "glcm_dissimilarity_d3",
+      "glcm_homogeneity_d3",
+      "glcm_asm_d3",
+      "glcm_correlation_d3"
+    ],
+    "interpretation": "posthoc development analysis; calibration quality must be measured, not assumed",
+    "method_selection_after_outer_results": "forbidden; no isotonic/threshold/model switching after calibration results",
+    "model_choice_basis": "posthoc Step 19 development five-condition BA; not a significance claim",
+    "patient_score": {
+      "logreg": "logit of mean image malignancy probability, clipped to [1e-6,1-1e-6]",
+      "svm": "mean image decision margin"
+    },
+    "primary_model": "svm",
+    "step": 20,
+    "test_access": "no held-out features/images/predictions before Step 21",
+    "threshold": 0.5,
+    "threshold_status": "fixed research threshold; not clinically optimized or validated",
+    "version": "patient_sigmoid_ensemble_v1"
+  },
+  "clean_cv_metrics": [
+    {
+      "balanced_accuracy": 0.8415666232336905,
+      "brier_score": 0.0914773315831861,
+      "fn": 74,
+      "fp": 27,
+      "log_loss": 0.30777957853684096,
+      "model": "logreg",
+      "patients": 851,
+      "roc_auc": 0.9348315601715391,
+      "sensitivity": 0.7299270072992701,
+      "specificity": 0.9532062391681109,
+      "tn": 550,
+      "tp": 200
+    },
+    {
+      "balanced_accuracy": 0.8473162215840808,
+      "brier_score": 0.0887747789887055,
+      "fn": 68,
+      "fp": 33,
+      "log_loss": 0.2999808863130975,
+      "model": "svm",
+      "patients": 851,
+      "roc_auc": 0.9358435906842592,
+      "sensitivity": 0.7518248175182481,
+      "specificity": 0.9428076256499134,
+      "tn": 544,
+      "tp": 206
+    }
+  ],
+  "development_images": 1514,
+  "development_patients": 851,
+  "final_protocol_sha256": "46ffd5e7bb8545fb0bc33351419dab6f5b08e00cad702ce6d533aac4ae9dc440",
+  "held_out_evaluation_used": false,
+  "inputs": {
+    "clean_features": {
+      "path": "<local-path-redacted>",
+      "sha256": "18b982f4a0fa37fa2e56183a000dbc358a25298e635f819ca0665757033556a9"
+    },
+    "coherent_features": {
+      "path": "<local-path-redacted>",
+      "sha256": "35c78f8a6c4545d4395861c16e12e00c54c8044a17d49c851ca3f881c46731f5"
+    },
+    "design_summary": {
+      "path": "<local-path-redacted>",
+      "sha256": "6c2aebfba900fe95093176276f90e96c935e4864cfb3c86d44787b32856289f3"
+    },
+    "geometry": {
+      "path": "<local-path-redacted>",
+      "sha256": "b9bddedce8aceabb877a3227f401793628b32fc4e1d90e3ce0580d445fa1e55b"
+    },
+    "manifest": {
+      "path": "<local-path-redacted>",
+      "sha256": "5b83114eba3a029a7ae59a0e461e84b28b5baf2444f439b1db67aeeebe141240"
+    },
+    "protocol": {
+      "path": "<local-path-redacted>",
+      "sha256": "ab489b425faf5e44f101844e1f217466808d93da73b7e59803917f52c674b339"
+    },
+    "step19_clean": {
+      "path": "<local-path-redacted>",
+      "sha256": "2f21245a57058af3f11237f131acbc24f2eb95da0819ab33958d6f5b07f69a78"
+    },
+    "step19_paired": {
+      "path": "<local-path-redacted>",
+      "sha256": "98a1cfeda7633f965e44f7798e1f5cf683c55dcdf68e50ddaf154cbd3998137b"
+    },
+    "step19_summary": {
+      "path": "<local-path-redacted>",
+      "sha256": "7281345a7ffba3bb66c32c5d83275d68f2d82b15b4a818228b4fc9b48b9563d1"
+    }
+  },
+  "limitations": "Outer CV evaluates this calibrated ensemble, a different estimator from Step 19 single refits; no assumption that calibration improves scores.",
+  "model_artifact_sha256": "627ef9df92e4b12b475a12c844b53e82e9dd7fefe05a9f07c3b94ca7c77f3586",
+  "sigmoid_fits": 36,
+  "status": "calibration_complete_final_protocol_frozen",
+  "step": 20,
+  "versions": {
+    "joblib": "1.6.0",
+    "numpy": "2.5.4",
+    "pandas": "3.0.6",
+    "pillow": "13.0.0",
+    "scikit-image": "0.26.0",
+    "scikit-learn": "1.9.1",
+    "scipy": "1.18.1"
+  }
+}

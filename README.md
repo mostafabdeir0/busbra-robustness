@@ -95,3 +95,24 @@ Dataset for Assessing Computer-aided Diagnosis Systems.** *Medical Physics*.
 All 22 planned scientific/reporting steps are complete. Remaining handoff:
 author review, course-specific formatting/submission and preservation of the
 complete reproducibility artifacts. No additional model experiment is planned.
+
+## Submission supplement (2026-11-20)
+
+New in this revision, all additive (no frozen file was changed):
+
+| Item | Where |
+|---|---|
+| **Final report** (PDF, Markdown, HTML, tables, figures) | [reports/submission_v2](reports/submission_v2/BUS_BRA_Report.pdf) |
+| **Trained model** (three-member calibrated LR and SVM ensembles, 0.22 MiB) and its [model card](models/MODEL_CARD.md) | [models/frozen_calibrated_models.joblib](models/frozen_calibrated_models.joblib) |
+| **Notebook** covering the whole workflow, plus [an executed copy with all outputs](notebooks/BUS_BRA_submission_executed.ipynb) (full mode, run from the raw archive) | [notebooks/BUS_BRA_submission.ipynb](notebooks/BUS_BRA_submission.ipynb) |
+| Verified run order and timings | [RUN_ORDER.md](RUN_ORDER.md) |
+| Experiment protocol summary | [experiment_protocol.md](experiment_protocol.md) |
+| Derived (non-image) development feature tables, so the notebook can retrain without the raw archive | [derived_features/](derived_features) |
+| Scripts for the added development-only tables and the report build | [analysis/](analysis) |
+| Logs of the independent rerun | [reproduction_logs/](reproduction_logs) |
+
+**Model integrity.** `models/frozen_calibrated_models.joblib` has SHA-256 `627ef9df92e4b12b475a12c844b53e82e9dd7fefe05a9f07c3b94ca7c77f3586`, the digest recorded for the original frozen model in `reports/final_step22_run2/report_manifest.json`. The development pipeline was rerun from the raw archive on 2026-11-20 with the pinned versions and regenerated a byte-identical file; every development number in the report was reproduced exactly. The held-out evaluation was not rerun.
+
+**Quick start for reviewers.** Install `requirements.txt`, then open the notebook. In its default `saved` mode it needs nothing else and finishes in seconds; set `RUN_MODE = "derived"` to retrain from `derived_features/` (about 3 minutes) or `"full"` to start from `data/raw/BUSBRA.zip` (about 8 minutes). The 198 unit tests (`python -m pytest -q`) use synthetic fixtures and need no data.
+
+The "Dataset and retained artifacts" paragraph above predates this supplement: the final model and the derived feature tables are now included. The raw dataset and the full original checkpoint folders are still not included; download BUS-BRA from Zenodo for a full rerun.
