@@ -296,7 +296,7 @@ The test is an internal patient hold-out, not an independent external clinical c
 | shape_extent | -0.46 | -0.05 | -0.34 | -0.34 | 3 | 4 |
 | glcm_correlation_d1 | +0.34 | +0.34 | +0.22 | +0.34 | 3 | 0 |
 
-*Table 11b.* The eight largest LR coefficients in the final ensemble, ranked by the absolute value of the median across the three members. Values are log-odds per standard deviation of the feature; positive pushes towards malignant. "Stability folds" is the number of outer folds (of 5) in which the stability procedure selected the feature.
+*Table 11b.* Median signed standardized coefficients of the three LR base models in the final ensemble, ranked by absolute median. Full table: reports/submission_v2/tables/table_lr_coefficients.csv.
 
 Table 11b lists the eight features with the largest LR coefficients, ranked by the absolute value of the median coefficient across the three ensemble members. Features were standardized within each member, so a value is the change in that member's image-level log-odds of malignancy for one standard deviation, with the other features held fixed. Positive values push towards malignant.
 
