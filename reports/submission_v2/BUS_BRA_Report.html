@@ -14,7 +14,7 @@ th { background: #eaf1f7; }
 img { max-width: 78%; display: block; margin: 8px auto 2px; page-break-inside: avoid; }
 code { font-family: Consolas, monospace; font-size: 8.8pt; background: #f1f4f7; padding: 0 2px; }
 a { color: #14527a; }
-table { break-inside: avoid; page-break-inside: avoid; }
+table:last-of-type, table.keep { break-inside: avoid; page-break-inside: avoid; }
 </style></head><body><h1>Breast ultrasound classification under lesion boundary uncertainty</h1>
 <p>Mostafa Bdeir and Hadi Fardan</p>
 <p>Final report | 2026-11-20 | Code, tests, saved results and the trained model: <a href="https://github.com/mostafabdeir0/busbra-robustness">https://github.com/mostafabdeir0/busbra-robustness</a></p>
@@ -49,7 +49,7 @@ table { break-inside: avoid; page-break-inside: avoid; }
 </ol>
 <h2>2. Dataset</h2>
 <p>BUS-BRA version 1.0 is the public dataset of Gomez-Flores, Gregorio-Calas and Pereira [1, 2]. We classify benign versus malignant pathology using the provided lesion delineations. BI-RADS labels, patient identifiers and scanner metadata are not model inputs. The 1,875 image-mask pairs and 1,064 patients were checked on download (no empty or non-binary masks, no image-mask size mismatches; four CSV-versus-image dimension discrepancies were noted and are non-blocking).</p>
-<table>
+<table class="keep">
 <thead>
 <tr>
 <th>Cohort</th>
@@ -91,7 +91,7 @@ table { break-inside: avoid; page-break-inside: avoid; }
 <h3>3.2 Models and tuning</h3>
 <p>Logistic regression is the classical baseline: it is regularized, interpretable through its coefficients, and strong on small tabular feature sets. The RBF SVM is the Level 2 model. LR tunes C over 0.01, 0.1, 1, 10 and 100 (10 candidates with class balancing off or on). The SVM tunes C over 0.1, 1 and 10 and gamma over scale, 0.01 and 0.1 (18 candidates with balancing off or on). Each patient contributes total training weight one across their views, with optional class balancing, and patient scores average the image scores. Scaling and fitting use training folds only. The original inner objective is patient balanced accuracy (BA), with AUC and simpler settings as tie-breakers.</p>
 <p>The settings chosen in each outer fold of the original baselines were:</p>
-<table>
+<table class="keep">
 <thead>
 <tr>
 <th>Model</th>
@@ -262,7 +262,7 @@ table { break-inside: avoid; page-break-inside: avoid; }
 <h2>4. Results</h2>
 <h3>4.1 Clean development baselines</h3>
 <p>The first experiment established clean nested patient-level baselines on development data.</p>
-<table>
+<table class="keep">
 <thead>
 <tr>
 <th>Original clean baseline</th>
@@ -285,7 +285,7 @@ table { break-inside: avoid; page-break-inside: avoid; }
 </table>
 <p><em>Table 4.</em> Original clean development baselines.</p>
 <p>Fold-to-fold variation of the calibrated development predictions shows how sensitive conclusions are to the split. Across the five outer folds, the standard deviation of balanced accuracy is 2.0 points for LR and 2.9 for the SVM (ranges of 5.0 and 7.2 points), larger than the 0.6-point gap between the two classifiers' means:</p>
-<table>
+<table class="keep">
 <thead>
 <tr>
 <th>Model</th>
@@ -476,7 +476,7 @@ table { break-inside: avoid; page-break-inside: avoid; }
 <p><em>Table 6.</em> Original construction, eight conditions, development data (patient-level paired changes relative to each model's own clean baseline; "Flip" is the share of patients whose predicted class changed).</p>
 <p>In our proposal, the main number for this experiment was the average drop in balanced accuracy over the eight conditions. That average is −5.17 points for LR and −1.64 points for the SVM. Most of the LR drop comes from the two mild edits. Without them (a post-hoc breakdown), the other six conditions average −1.49 points for LR and −0.10 for the SVM.</p>
 <p>Under the original construction, mild erosion and dilation cost LR 16.8 and 15.7 balanced-accuracy points and flipped about 30% of its predictions, against 6.6 and 5.9 points and about 15-16% for the SVM. Moderate edits and all translations were much smaller for both models (LR up to 3.9 points; SVM up to 0.7 points). The coherent construction produced much smaller changes for both models:</p>
-<table>
+<table class="keep">
 <thead>
 <tr>
 <th>Model</th>
@@ -562,7 +562,7 @@ table { break-inside: avoid; page-break-inside: avoid; }
 <p>The large original losses are mechanism-dependent: scattered pixel changes alter perimeter-dependent features. This supports sensitivity to how a perturbation is constructed; it does not validate either construction as a realistic clinical annotation-error model. Development bootstrap intervals were exploratory, conditional on saved out-of-fold fits, and omit retraining variability; cross-validation uncertainty needs particular caution because training sets overlap [4].</p>
 <h3>4.3 Stability feature selection (mitigation experiment)</h3>
 <p>Both the subset arm and the all-23 comparator tuned the same grids and the same objective (mean of clean plus four coherent patient BAs, averaged over three inner folds).</p>
-<table>
+<table class="keep">
 <thead>
 <tr>
 <th>Model</th>
@@ -732,7 +732,7 @@ table { break-inside: avoid; page-break-inside: avoid; }
 <p>The negative finding applies to this frozen score, candidate sizes and objective; it does not show that all stability-aware methods fail.</p>
 <h3>4.4 Calibrated development performance</h3>
 <p>At 0.5, calibrated outer-fold sensitivity fell and specificity rose relative to the earlier single-refit estimators. The ensemble has different member training sizes and settings, so cross-step differences cannot be attributed only to the sigmoid. The threshold was not changed after this trade-off was observed.</p>
-<table>
+<table class="keep">
 <thead>
 <tr>
 <th>Calibrated outer CV</th>
@@ -762,7 +762,7 @@ table { break-inside: avoid; page-break-inside: avoid; }
 <p><em>Table 10.</em> Calibrated outer-fold development performance at threshold 0.5.</p>
 <h3>4.5 Locked held-out performance</h3>
 <p>The test cohort contains 145 benign and 68 malignant patients. Intervals are pointwise percentiles from 10,000 shared patient resamples within diagnosis (seed 42), conditional on the frozen models [10].</p>
-<table>
+<table class="keep">
 <thead>
 <tr>
 <th>Metric</th>
@@ -811,7 +811,7 @@ table { break-inside: avoid; page-break-inside: avoid; }
 <p><strong>What the SVM improves, and what that costs (Level 2 verdict).</strong> The SVM's clean BA is 1.42 points higher (paired interval [0.00, 3.29]), and it classified three more of the 213 patients correctly. LR had the better AUC, Brier score and log loss. The paired interval includes zero, so this hold-out does not establish a clear SVM improvement. Per-fit compute is negligible for both models in our single-fold timing (Section 4.9), so the cost lies elsewhere: a tuning grid of 18 rather than 10 candidates (which increases the number of candidate fits), a single compressed base model about 60 times larger, and a decision function that cannot be read off coefficients as LR's can (Section 4.5.1, Table 11b). On this evidence the SVM's advantage does not justify preferring it by default; the simpler LR is the better default unless a larger evaluation shows a clear gain.</p>
 <p>The test is an internal patient hold-out, not an independent external clinical cohort. Secondary intervals are not adjusted for multiple comparisons. No threshold, feature or model changes followed the test results.</p>
 <h4>4.5.1 What the logistic regression relies on</h4>
-<table>
+<table class="keep">
 <thead>
 <tr>
 <th>Feature</th>
@@ -910,7 +910,7 @@ table { break-inside: avoid; page-break-inside: avoid; }
 <p>Figure 6. Frozen-threshold confusion matrices. Counts are patients, not individual image views.</p>
 <h3>4.7 Held-out boundary sensitivity (coherent edits)</h3>
 <p>Every test image had all four valid coherent feature vectors, and all paired comparisons keep the same patients and views. A positive change means higher perturbed BA relative to the model's own clean baseline; it does not imply that segmentation errors are beneficial. Some edits raise BA by moving a small number of scores across 0.5 while ranking AUC or probability losses worsen: dilation lowers AUC for both classifiers in this cohort.</p>
-<table>
+<table class="keep">
 <thead>
 <tr>
 <th>Model</th>
@@ -1191,7 +1191,7 @@ table { break-inside: avoid; page-break-inside: avoid; }
 <p><em>Table 13.</em> Development out-of-fold error rates by lesion size and number of views.</p>
 <p>Malignant lesions in the smallest size tertile were missed most often (40-43%, but only 30 patients, so this is imprecise), and large benign lesions were most often called malignant (11.5-12.2%). Malignant patients with a single view were missed more often than those with two views (31.6% against 23.0-25.8%). These are descriptive associations within development data; we infer no biological cause from them.</p>
 <p><strong>Held-out confidence errors.</strong> Thirty held-out patients were misclassified by both models, three by LR only and none by the SVM only; 180 were correct for both, and 20 malignant patients were missed by both. The six most confident errors (lowest-probability SVM false negatives and highest-probability false positives, chosen deterministically) are listed below. This is a descriptive audit, not a blinded clinical review, and no image-quality, subtype or scanner cause is inferred from a probability alone.</p>
-<table>
+<table class="keep">
 <thead>
 <tr>
 <th>Example category</th>
@@ -1249,7 +1249,7 @@ table { break-inside: avoid; page-break-inside: avoid; }
 <p><em>Table 14.</em> The six most confident held-out errors.</p>
 <p><strong>Mitigations.</strong> The boundary-sensitivity failure mode was addressed with stability-based feature selection (Section 4.3), which did not help. For the missed-malignancy failure mode, the natural mitigation is a sensitivity-oriented operating threshold. The test threshold of 0.5 was frozen before the test set was scored, and choosing a new one after seeing the test errors would contaminate that evaluation, so we evaluated this mitigation on development data only.</p>
 <p><strong>Exploratory threshold analysis (development only, added after the main study).</strong> We used the calibrated out-of-fold predictions for the 851 development patients (274 malignant); each patient's probability comes from an ensemble that never saw that patient. At the fixed 0.5 threshold, both models had higher specificity than sensitivity on the development cohort. In development it gives 75.2% sensitivity and 94.3% specificity for the SVM (73.0% and 95.3% for LR), and balanced accuracy is higher at 0.3 (87.8% for the SVM) than at 0.5 (84.7%).</p>
-<table>
+<table class="keep">
 <thead>
 <tr>
 <th>Model</th>
@@ -1339,7 +1339,7 @@ table { break-inside: avoid; page-break-inside: avoid; }
 <p><em>Table 15.</em> Development results at fixed thresholds (calibrated out-of-fold predictions; not the test set).</p>
 <p>Selecting and evaluating a threshold on the same data can give optimistic estimates. To reduce this, for each outer fold we chose the largest threshold reaching the target sensitivity on the other four folds and applied it to that fold. The separation is only partial: the ensembles that produced the other folds' probabilities were trained partly on the evaluated fold's patients, so these results are descriptive; the size and direction of any bias were not measured. A fully nested version would choose each threshold from out-of-fold probabilities computed entirely within the outer training pool. With a 90% target the result was 90.1% sensitivity and 82.7% specificity for the SVM (89.8% and 82.7% for LR), so the target was approximately met on the folds it was applied to. Missed cancers fell from 68 to 27 for the SVM (74 to 28 for LR), while false alarms rose from 33 to 100 (27 to 100 for LR): about 1.6 extra false alarms for each additional cancer detected. The thresholds chosen in the five folds were stable, between 0.22 and 0.30.</p>
 <p>Our proposal planned to pick the threshold in grouped CV before testing. We did not do that. Table 16 is a later, exploratory look at the same idea on development data only, and it does not change any test result.</p>
-<table>
+<table class="keep">
 <thead>
 <tr>
 <th>Model</th>
@@ -1428,7 +1428,7 @@ table { break-inside: avoid; page-break-inside: avoid; }
 <p>The analysis suggests that much of the sensitivity limitation is an operating-point choice rather than a ranking failure, and that the trade-off is steep. It is post hoc (conceived after the test results were seen) and uses development data only, so its numbers are development estimates, not test performance. The SVM cutoff estimated from all development patients is displayed as 0.2367 (Table 16); used as one fixed cutoff it gives 90.1% sensitivity with 27 missed cancers and 99 false alarms. A future evaluation would lock the unrounded value in advance and test it on new data. Rounding matters: on the same development predictions, 0.237 or 0.24 gives 89.8% sensitivity (28 missed cancers) instead of 90.1% at 0.2367.</p>
 <h3>4.9 Complexity and resource analysis</h3>
 <p>Timings are from one development fold (1,200 images, 680 patients), with the settings selected for that fold and no tuning, 10 repeats after a warm-up, on one Windows 11 machine with an Intel CPU. They are comparable operations, not the three-member calibrated ensembles. They are meant to show orders of magnitude and are not a general speed claim; in particular, the SVM fitted faster than LR here only for these selected settings.</p>
-<table>
+<table class="keep">
 <thead>
 <tr>
 <th>Model</th>
@@ -1457,7 +1457,7 @@ table { break-inside: avoid; page-break-inside: avoid; }
 </table>
 <p><em>Table 17.</em> Single-model timing and size on one development fold (no tuning).</p>
 <p>In this benchmark, preparing one image (preprocessing plus the 23 features) took about 3.0 ms, predicting one patient took about 2.5 ms with either classifier (including aggregation), and a single fit took milliseconds. The benchmark did not time the nested search or the calibrated ensembles, so it does not show where the complete pipeline spends most of its time; what it does show is that a single SVM fit took 12.9 ms against 28.4 ms for LR and predicting one patient took 2.56 ms against 2.43 ms, so in this benchmark the SVM fit faster than LR, while prediction times were close. The SVM's measurable costs are elsewhere: the compressed single-model file is about 92 KB against 1.5 KB for LR, the tuning grid has 18 rather than 10 candidates, and the final calibrated ensemble holds 1,303 support vectors against 69 linear coefficients. Fit counts for the full procedures, including nested search, from the original run's records:</p>
-<table>
+<table class="keep">
 <thead>
 <tr>
 <th>Stage</th>
@@ -1521,7 +1521,7 @@ table { break-inside: avoid; page-break-inside: avoid; }
 <p>[12] Xian M, Zhang Y, Cheng HD, et al. Automatic breast ultrasound image segmentation: A survey. Pattern Recognition. 2018;79:340-355. DOI: <a href="https://doi.org/10.1016/j.patcog.2018.02.012">10.1016/j.patcog.2018.02.012</a>.</p>
 <p>[13] Cortes C, Vapnik V. Support-vector networks. Machine Learning. 1995;20(3):273-297. DOI: <a href="https://doi.org/10.1007/BF00994018">10.1007/BF00994018</a>.</p>
 <h2>Appendix. Historical checkpoint names</h2>
-<table>
+<table class="keep">
 <thead>
 <tr>
 <th>Label</th>

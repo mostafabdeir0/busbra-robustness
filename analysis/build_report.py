@@ -45,7 +45,7 @@ th { background: #eaf1f7; }
 img { max-width: 78%; display: block; margin: 8px auto 2px; page-break-inside: avoid; }
 code { font-family: Consolas, monospace; font-size: 8.8pt; background: #f1f4f7; padding: 0 2px; }
 a { color: #14527a; }
-table { break-inside: avoid; page-break-inside: avoid; }
+table:last-of-type, table.keep { break-inside: avoid; page-break-inside: avoid; }
 """
 
 
@@ -78,6 +78,14 @@ def main():
         text = text.replace(british, american)
     (folder / "BUS_BRA_Report.md").write_text(text, encoding="utf-8")
     body = markdown.markdown(text, extensions=["tables", "sane_lists"])
+
+    def keep_small(match):  # short tables (10 body rows or fewer, little text) stay on one page; long ones may split
+        table = match.group(0)
+        rows = table.count("<tr>") - 1
+        chars = len(re.sub(r"<[^>]+>", "", table))
+        return table.replace("<table>", '<table class="keep">', 1) if rows <= 10 and chars <= 1000 else table
+
+    body = re.sub(r"<table>.*?</table>", keep_small, body, flags=re.S)
 
     def embed(match):  # embed figures so the PDF never races image loading
         image = folder / match.group(1)
