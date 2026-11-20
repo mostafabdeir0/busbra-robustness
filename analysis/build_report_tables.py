@@ -33,10 +33,11 @@ def load_dev_script(root: Path):
     return module
 
 
-def lr_coefficient_table(root: Path) -> pd.DataFrame:
+def lr_coefficient_table(root: Path, tables: Path) -> pd.DataFrame:
     """Base LR coefficients (per SD of each feature) of the three frozen LR ensemble members.
 
-    Reads only the frozen development-trained model file. The 1-input sigmoid calibrators are skipped.
+    Reads only the frozen development-trained model file and the saved stability-selection table.
+    The 1-input sigmoid calibrators are skipped (their slopes are checked to be positive).
     """
     import joblib
     sys.path.insert(0, str(root))
@@ -48,13 +49,21 @@ def lr_coefficient_table(root: Path) -> pd.DataFrame:
         assert [name for name, _ in pipe.steps] == ["scaler", "classifier"], "StandardScaler must come before LR"
         assert list(pipe.named_steps["classifier"].classes_) == [0, 1]
         cols[f"Member {k}"] = pd.Series(pipe.named_steps["classifier"].coef_.ravel(), index=list(member["base_model"].columns))
+    for k, member in enumerate(members, start=1):  # positive slope: signs carry through to the final probability
+        sigmoid = member["calibrator"].named_steps["sigmoid"]
+        scale = member["calibrator"].named_steps["scaler"].scale_[0]
+        slope = float(sigmoid.coef_.ravel()[0] / scale)
+        print(f"Member {k} calibrator slope on the raw score: {slope:.4f}")
+        assert slope > 0, "calibrator slope must be positive"
     t = pd.DataFrame(cols)
     t.index.name = "Feature"
-    t["Mean"] = t.mean(axis=1)
-    members_only = [c for c in t.columns if c.startswith("Member")]
-    t["Members agreeing with the mean's sign"] = (np.sign(t[members_only]).eq(np.sign(t["Mean"]), axis=0)).sum(axis=1)
-    t = t.reindex(t["Mean"].abs().sort_values(ascending=False).index).reset_index()
-    return t.round({c: 4 for c in members_only + ["Mean"]})
+    members_only = list(t.columns)
+    t["Median"] = t[members_only].median(axis=1)
+    t["Members agreeing with the median's sign"] = (np.sign(t[members_only]).eq(np.sign(t["Median"]), axis=0)).sum(axis=1)
+    stab = pd.read_csv(tables / "table_stability_selection_frequency.csv").set_index("Feature")
+    t["Folds selected by stability (of 5)"] = stab["LR folds selected (of 5)"].reindex(t.index).astype(int)
+    t = t.reindex(t["Median"].abs().sort_values(ascending=False).index).reset_index()
+    return t.round({c: 4 for c in members_only + ["Median"]})
 
 
 def main():
@@ -69,7 +78,7 @@ def main():
     out = (args.out or root / "reports/submission_v2/tables").resolve()
     out.mkdir(parents=True, exist_ok=True)
     if args.lr_coefficients_only:
-        lr_coefficient_table(root).to_csv(out / "table_lr_coefficients.csv", index=False)
+        lr_coefficient_table(root, out).to_csv(out / "table_lr_coefficients.csv", index=False)
         print("wrote", out / "table_lr_coefficients.csv")
         return
     rb = root / "results/robustness"
@@ -204,7 +213,7 @@ def main():
     nums["extract_ms_per_image"] = round(float(np.median(samples[1:])), 2)
 
     # 8. Logistic regression coefficients of the frozen development-trained ensemble
-    lr_coefficient_table(root).to_csv(out / "table_lr_coefficients.csv", index=False)
+    lr_coefficient_table(root, out).to_csv(out / "table_lr_coefficients.csv", index=False)
 
     (out / "report_numbers.json").write_text(json.dumps(nums, indent=2, default=str), encoding="utf-8")
     print("tables written to", out)
