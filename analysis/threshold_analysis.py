@@ -71,6 +71,15 @@ def main():
     required = {"model", "Case", "actual", "prob_malignant", "outer_fold"}
     if not required.issubset(oof.columns) or oof.duplicated(["model", "Case"]).any():
         raise SystemExit("Expected one calibrated out-of-fold prediction per patient and model")
+    if set(oof.model) != {"logreg", "svm"}:
+        raise SystemExit(f"Expected exactly the models logreg and svm, found {sorted(set(oof.model))}")
+    probs = pd.to_numeric(oof.prob_malignant, errors="coerce").to_numpy(float)
+    if not np.isfinite(probs).all() or (probs < 0).any() or (probs > 1).any():
+        raise SystemExit("Probabilities must be finite and within [0, 1]")
+    if not oof.actual.isin([0, 1]).all():
+        raise SystemExit("Labels must be 0 or 1")
+    if oof.groupby("model").Case.apply(frozenset).nunique() != 1:
+        raise SystemExit("Both models must cover the same patients")
     if a.manifest is not None:
         man = pd.read_csv(a.manifest)
         dev = man[man.split.eq("development")].groupby("Case").agg(pathology=("Pathology", "first"), fold=("dev_fold", "first"))
@@ -138,7 +147,7 @@ def main():
         ax.axvline(0.5, color="#5B6B70", lw=1, ls=":")
         ax.axvline(t90, color="#12343B", lw=1)
         ax.text(0.505, 0.03, "fixed 0.5", fontsize=8, color="#5B6B70")
-        ax.text(t90 + 0.005, 0.10, f"90% target\n{t90:.2f}", fontsize=8, color="#12343B")
+        ax.text(t90 + 0.005, 0.10, f"90% target\n{t90:.4f}", fontsize=8, color="#12343B")
         ax.set_title(NAMES[m], fontsize=11)
         ax.set_xlabel("Probability threshold (patient is called malignant at or above it)")
         ax.set_xlim(0, 1); ax.set_ylim(0, 1.02); ax.grid(alpha=.25)
