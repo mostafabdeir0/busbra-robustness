@@ -10,7 +10,7 @@ Computer-aided diagnosis of breast ultrasound lesions often starts from an outli
 
 On the hold-out, the calibrated SVM reached balanced accuracy 81.85% (95% interval 75.96-87.43) against 80.42% for LR. The paired difference of +1.42 points has an interval of [0.00, 3.29], three more patients were classified correctly, and LR had slightly better AUC and probability losses, so the evidence does not support preferring the SVM by default. In a single-fold timing of one tuned base model each, fitting and prediction took milliseconds for both, so per-fit compute is not the SVM's main cost; its costs are a larger tuning grid (18 against 10 candidates), a larger model (about 60 times larger for one compressed base model) and lower interpretability. At the fixed 0.5 threshold the SVM missed 20 of 68 malignant patients. In a descriptive, development-only analysis, thresholds chosen for 90% sensitivity on the other development folds gave 90.1% sensitivity and 82.7% specificity for the SVM, against 75.2% and 94.3% at 0.5; this estimate is not fully independent of the folds it was applied to, and it has not been evaluated on the test set.
 
-Measured boundary sensitivity depended strongly on how the boundary edits were built. Under our first, pixel-scattering construction, development balanced accuracy fell by 16.8 and 15.7 points for LR under mild erosion and dilation, against 6.6 and 5.9 points for the SVM, so the nonlinear model was less sensitive, not more. With spatially coherent edits, the largest balanced-accuracy decrease across the four conditions was 2.54 percentage points. A training-only stability feature-selection procedure, compared with a matched all-feature model, did not improve the development accuracy-robustness objective.
+Measured boundary sensitivity depended strongly on how the boundary edits were built. Under our first, pixel-scattering construction, development balanced accuracy fell by 16.8 and 15.7 points for LR under mild erosion and dilation, against 6.6 and 5.9 points for the SVM, so the nonlinear model was less sensitive, not more. Averaged over all eight conditions, our planned primary endpoint, LR lost 5.2 points and the SVM 1.6. With spatially coherent edits, the largest balanced-accuracy decrease across the four conditions was 2.54 percentage points. A training-only stability feature-selection procedure, compared with a matched all-feature model, did not improve the development accuracy-robustness objective.
 
 ## 1. Introduction
 
@@ -100,10 +100,10 @@ The table below lists what the approved proposal said, what was done, why, and w
 
 | Proposed | Final procedure | Reason | Before held-out scoring? |
 | --- | --- | --- | --- |
-| Mean balanced-accuracy drop under eight predefined masks is the primary endpoint of the stress test | The headline held-out result is clean SVM balanced accuracy; boundary sensitivity is reported per condition with paired intervals | SVM was designated primary from the development five-condition objective. This is a post-hoc, development-based choice, not a significance claim | Yes: protocol frozen before the held-out evaluation |
+| Mean balanced-accuracy drop under eight predefined masks is the primary endpoint of the stress test | The headline test result is the clean SVM balanced accuracy. Boundary sensitivity is reported per condition, and the planned endpoint (mean drop over the eight conditions) is given in Section 4.2. | SVM was designated primary from the development five-condition objective. This is a post-hoc, development-based choice, not a significance claim | Yes: protocol frozen before the held-out evaluation |
 | Eight boundary conditions: erosion, dilation, translation | All eight were assessed on development data. The held-out evaluation used the four erosion and dilation conditions | Later stages require complete paired coverage for every patient, which erosion and dilation provide and translations do not (849 and 841 of 851 development patients had valid left and right shifts) | Yes |
 | One edit construction per condition | A second, coherent construction was added; both are reported | The first construction produced unexpectedly large mild-condition losses; the diagnosis pointed to scattered pixel changes | Yes (post-hoc development diagnostic) |
-| Operating threshold chosen in grouped cross-validation | Fixed threshold of 0.5, not tuned, for every reported test result. An exploratory development-only threshold analysis was added afterwards (Section 4.8) | The protocol fixes 0.5 as a research threshold and forbids switching methods after seeing outer results, so that the operating point is not chosen after the sensitivity-specificity trade-off is visible | Yes for the 0.5 threshold; the exploratory analysis came after the test results |
+| Operating threshold chosen in grouped cross-validation | Fixed threshold of 0.5 for every test result. We did not run the CV threshold selection from the proposal before the test evaluation. Table 16 shows it afterwards, on development data only. | When we froze the protocol we fixed 0.5 so the operating point could not be tuned after seeing results. Looking back, choosing it in CV on development data would not have broken that rule. For calibrated probabilities the best cut-off for balanced accuracy is close to the malignant share (about 0.32), and Table 15 shows BA peaking near 0.3, so 0.5 favoured specificity. | Yes for 0.5. Table 16 came after the test results. |
 | Calibration and confidence reliability | Patient-level sigmoid calibration in a three-member ensemble whose calibration patients are disjoint from the base patients used for tuning and fitting | Keeps calibration free of leakage from tuning and outer-validation patients | Yes |
 | Stable features chosen from development data, then retrain (Experiment 3) | Frozen nested procedure with k in {5, 10, 15} and a matched all-23 comparator | A matched comparator attributes any change to feature selection | Yes: design frozen first; result negative |
 | Runtime and confidence in Experiment 1 | Development-only timing benchmark (Section 4.9) | Runtimes were not retained for the calibration or test stages of the original run | Not applicable |
@@ -138,11 +138,15 @@ Table: Fold-to-fold variation of calibrated development balanced accuracy (SD = 
 
 Table: Original construction, eight conditions, development data (patient-level paired changes relative to each model's own clean baseline; "Flip" is the share of patients whose predicted class changed).
 
+In our proposal, the main number for this experiment was the average drop in balanced accuracy over the eight conditions. That average is −5.17 points for LR and −1.64 points for the SVM. Most of the LR drop comes from the two mild edits. Without them, the other six conditions average −1.49 points for LR and −0.10 for the SVM.
+
 Under the original construction, mild erosion and dilation cost LR 16.8 and 15.7 balanced-accuracy points and flipped about 30% of its predictions, against 6.6 and 5.9 points and about 15-16% for the SVM. Moderate edits and all translations were much smaller for both models (LR up to 3.9 points; SVM up to 0.7 points). The coherent construction produced much smaller changes for both models:
 
 {{T:coherent_development}}
 
 Table: Coherent construction, development data.
+
+With the coherent edits, the four-condition average is −1.28 points for LR and −0.48 for the SVM.
 
 ![Figure 1. Original and coherent development BA changes for the same original clean-model procedure. This is a perturbation-construction comparison, not the final calibrated test model.](figures/06_original_and_coherent.png)
 
@@ -280,6 +284,8 @@ Table: The six most confident held-out errors.
 Table: Development results at fixed thresholds (calibrated out-of-fold predictions; not the test set).
 
 Selecting and evaluating a threshold on the same data can give optimistic estimates. To reduce this, for each outer fold we chose the largest threshold reaching the target sensitivity on the other four folds and applied it to that fold. The separation is only partial: the ensembles that produced the other folds' probabilities were trained partly on the evaluated fold's patients, so these results are descriptive; the size and direction of any bias were not measured. A fully nested version would choose each threshold from out-of-fold probabilities computed entirely within the outer training pool. With a 90% target the result was 90.1% sensitivity and 82.7% specificity for the SVM (89.8% and 82.7% for LR), so the target was approximately met on the folds it was applied to. Missed cancers fell from 68 to 27 for the SVM (74 to 28 for LR), while false alarms rose from 33 to 100 (27 to 100 for LR): about 1.6 extra false alarms for each additional cancer detected. The thresholds chosen in the five folds were stable, between 0.22 and 0.30.
+
+Table 16 is the threshold selection our proposal planned. We ran it after the test evaluation, on development data only, so it does not change any test result.
 
 {{T:threshold_policy}}
 
