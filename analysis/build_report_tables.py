@@ -83,7 +83,7 @@ def main():
     # 3. Stability subset selection frequencies (union of the two classifiers' identical rankings)
     f = pd.read_csv(rb / "selection_step19/feature_selection_frequency.csv")
     s = f[f.arm == "stability_topk"].pivot(index="feature", columns="model", values="selected_outer_folds")
-    s = s.sort_values(["logreg", "svm"], ascending=False).reset_index()
+    s = s.reset_index().sort_values(["logreg", "svm", "feature"], ascending=[False, False, True])  # ties by name
     ts = s.rename(columns={"feature": "Feature", "logreg": "LR folds selected (of 5)", "svm": "SVM folds selected (of 5)"})
     ts.to_csv(out / "table_stability_selection_frequency.csv", index=False)
     (out / "table_stability_selection_frequency.md").write_text(md(ts), encoding="utf-8")
