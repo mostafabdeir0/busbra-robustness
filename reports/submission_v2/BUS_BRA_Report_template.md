@@ -331,31 +331,31 @@ Repository: <https://github.com/mostafabdeir0/busbra-robustness>. It contains th
 
 ## References
 
-[1] Gomez-Flores W, Gregorio-Calas MJ, Pereira WCA. BUS-BRA: A Breast Ultrasound Dataset for Assessing Computer-aided Diagnosis Systems. Medical Physics. 2024;51:3110-3123. DOI: 10.1002/mp.16812.
+[1] Gomez-Flores W, Gregorio-Calas MJ, Pereira WCA. BUS-BRA: A Breast Ultrasound Dataset for Assessing Computer-aided Diagnosis Systems. Medical Physics. 2024;51:3110-3123. DOI: [10.1002/mp.16812](https://doi.org/10.1002/mp.16812).
 
-[2] BUS-BRA version 1.0 dataset. Zenodo. https://zenodo.org/records/8231412. Dataset DOI: 10.5281/zenodo.8231412.
+[2] BUS-BRA version 1.0 dataset. Zenodo. <https://zenodo.org/records/8231412>. Dataset DOI: [10.5281/zenodo.8231412](https://doi.org/10.5281/zenodo.8231412).
 
-[3] Scikit-learn documentation. Probability calibration. https://scikit-learn.org/stable/modules/calibration.html. Also: Nested versus non-nested cross-validation, https://scikit-learn.org/stable/auto_examples/model_selection/plot_nested_cross_validation_iris.html.
+[3] Scikit-learn documentation. Probability calibration. <https://scikit-learn.org/stable/modules/calibration.html>. Also: Nested versus non-nested cross-validation, <https://scikit-learn.org/stable/auto_examples/model_selection/plot_nested_cross_validation_iris.html>.
 
-[4] Bates S, Hastie T, Tibshirani R. Cross-validation: what does it estimate and how well does it do it? arXiv:2104.00673.
+[4] Bates S, Hastie T, Tibshirani R. Cross-validation: what does it estimate and how well does it do it? [arXiv:2104.00673](https://arxiv.org/abs/2104.00673).
 
-[5] Gomez Flores W, Pereira WCA, Infantosi AFC. Improving classification performance of breast lesions on ultrasonography. Pattern Recognition. 2015;48(4):1125-1136. DOI: 10.1016/j.patcog.2014.06.006.
+[5] Gomez Flores W, Pereira WCA, Infantosi AFC. Improving classification performance of breast lesions on ultrasonography. Pattern Recognition. 2015;48(4):1125-1136. DOI: [10.1016/j.patcog.2014.06.006](https://doi.org/10.1016/j.patcog.2014.06.006).
 
-[6] Zwanenburg A, Leger S, Agolli L, et al. Assessing robustness of radiomic features by image perturbation. Scientific Reports. 2019;9. DOI: 10.1038/s41598-018-36938-4.
+[6] Zwanenburg A, Leger S, Agolli L, et al. Assessing robustness of radiomic features by image perturbation. Scientific Reports. 2019;9. DOI: [10.1038/s41598-018-36938-4](https://doi.org/10.1038/s41598-018-36938-4).
 
-[7] Granzier RWY, Verbakel NMH, Ibrahim A, et al. MRI-based radiomics in breast cancer: feature robustness with respect to inter-observer segmentation variability. Scientific Reports. 2020;10. DOI: 10.1038/s41598-020-70940-z.
+[7] Granzier RWY, Verbakel NMH, Ibrahim A, et al. MRI-based radiomics in breast cancer: feature robustness with respect to inter-observer segmentation variability. Scientific Reports. 2020;10. DOI: [10.1038/s41598-020-70940-z](https://doi.org/10.1038/s41598-020-70940-z).
 
-[8] Haralick RM, Shanmugam K, Dinstein I. Textural features for image classification. IEEE Transactions on Systems, Man, and Cybernetics. 1973;SMC-3(6):610-621. DOI: 10.1109/TSMC.1973.4309314.
+[8] Haralick RM, Shanmugam K, Dinstein I. Textural features for image classification. IEEE Transactions on Systems, Man, and Cybernetics. 1973;SMC-3(6):610-621. DOI: [10.1109/TSMC.1973.4309314](https://doi.org/10.1109/TSMC.1973.4309314).
 
-[9] Platt JC. Probabilities for SV machines. In: Advances in Large-Margin Classifiers. MIT Press; 2000. p. 61-74. DOI: 10.7551/mitpress/1113.003.0008.
+[9] Platt JC. Probabilities for SV machines. In: Advances in Large-Margin Classifiers. MIT Press; 2000. p. 61-74. DOI: [10.7551/mitpress/1113.003.0008](https://doi.org/10.7551/mitpress/1113.003.0008).
 
-[10] Efron B. Bootstrap methods: another look at the jackknife. Annals of Statistics. 1979;7(1):1-26. DOI: 10.1214/aos/1176344552.
+[10] Efron B. Bootstrap methods: another look at the jackknife. Annals of Statistics. 1979;7(1):1-26. DOI: [10.1214/aos/1176344552](https://doi.org/10.1214/aos/1176344552).
 
-[11] Cheng HD, Shan J, Ju W, Guo Y, Zhang L. Automated breast cancer detection and classification using ultrasound images: A survey. Pattern Recognition. 2010;43(1):299-317. DOI: 10.1016/j.patcog.2009.05.012.
+[11] Cheng HD, Shan J, Ju W, Guo Y, Zhang L. Automated breast cancer detection and classification using ultrasound images: A survey. Pattern Recognition. 2010;43(1):299-317. DOI: [10.1016/j.patcog.2009.05.012](https://doi.org/10.1016/j.patcog.2009.05.012).
 
-[12] Xian M, Zhang Y, Cheng HD, et al. Automatic breast ultrasound image segmentation: A survey. Pattern Recognition. 2018;79:340-355. DOI: 10.1016/j.patcog.2018.02.012.
+[12] Xian M, Zhang Y, Cheng HD, et al. Automatic breast ultrasound image segmentation: A survey. Pattern Recognition. 2018;79:340-355. DOI: [10.1016/j.patcog.2018.02.012](https://doi.org/10.1016/j.patcog.2018.02.012).
 
-[13] Cortes C, Vapnik V. Support-vector networks. Machine Learning. 1995;20(3):273-297. DOI: 10.1007/BF00994018.
+[13] Cortes C, Vapnik V. Support-vector networks. Machine Learning. 1995;20(3):273-297. DOI: [10.1007/BF00994018](https://doi.org/10.1007/BF00994018).
 
 ## Appendix. Historical checkpoint names
 
